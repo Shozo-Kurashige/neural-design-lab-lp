@@ -1,0 +1,158 @@
+================================================================
+Neural Design Lab Official LP — プロジェクトサマリー
+================================================================
+最終更新: 2026-04-10
+担当AI: Claude (セイ)
+補足追記：CEO藏重
+
+----------------------------------------------------------------
+【プロジェクト概要】
+----------------------------------------------------------------
+名称    : Neural Design Lab Official LP
+用途    : 地方・中小企業向けDXパートナーの公式LP
+GitHub  : https://github.com/Shozo-Kurashige/neural-design-lab-lp
+本番URL : https://neuraldesignlab.jp
+サーバー: heteml（FTP運用）
+
+----------------------------------------------------------------
+【技術スタック】
+----------------------------------------------------------------
+フレームワーク : React + Vite (TypeScript)
+スタイリング   : Tailwind CSS v3 (PostCSS インライン設定)
+ルーティング   : wouter
+状態管理       : TanStack Query
+UIコンポーネント: Radix UI + shadcn/ui
+アニメーション : Framer Motion
+
+----------------------------------------------------------------
+【API連携一覧】※値は .env で管理
+----------------------------------------------------------------
+
+[1] Firebase (Firestore)
+    用途    : AI診断レポートのダウンロード数カウンター
+    プロジェクト: ndl-lp-system
+    コレクション: stats/downloads
+    操作    : read / create / update（+1のみ）/ delete禁止
+    設定ファイル: client/src/lib/firebase.ts
+    環境変数 :
+      VITE_FIREBASE_API_KEY
+      VITE_FIREBASE_AUTH_DOMAIN
+      VITE_FIREBASE_PROJECT_ID
+      VITE_FIREBASE_STORAGE_BUCKET
+      VITE_FIREBASE_MESSAGING_SENDER_ID
+      VITE_FIREBASE_APP_ID
+      VITE_FIREBASE_MEASUREMENT_ID
+
+[2] microCMS
+    用途    : 最新情報（What's New）セクション
+    エンドポイント: https://{DOMAIN}.microcms.io/api/v1/news?limit=3
+    認証    : X-MICROCMS-API-KEY ヘッダー（要秘匿）
+    設定ファイル: client/src/components/whats-new-section.tsx
+    環境変数 :
+      VITE_MICROCMS_SERVICE_DOMAIN
+      VITE_MICROCMS_API_KEY  ← 真の秘密情報、絶対公開禁止
+
+[3] WordPress / WPGraphQL
+    用途    : ブログセクション・個別記事ページ
+    エンドポイント: https://neuraldesignlab.jp/blog/graphql
+    認証    : なし（パブリック読み取り専用）
+    プロトコル: GraphQL (POST)
+    クエリ  : getAllPosts（最新20件）/ getPostBySlug（個別記事）
+    設定ファイル: client/src/lib/wordpress.ts
+    環境変数 :
+      VITE_WORDPRESS_API_URL=https://neuraldesignlab.jp/blog/graphql
+
+[4] Formspree
+    用途    : お問い合わせフォーム送信
+    エンドポイント: https://formspree.io/f/{FORM_ID}
+    認証    : Form ID（環境変数管理）
+    設定ファイル: client/src/components/contact-section.tsx
+    環境変数 :
+      VITE_FORMSPREE_FORM_ID
+
+[5] Google Analytics 4
+    用途    : アクセス解析
+    設定ファイル: client/src/pages/home.tsx（動的スクリプト注入）
+    環境変数 :
+      VITE_GA_MEASUREMENT_ID
+
+----------------------------------------------------------------
+【環境変数管理ルール】
+----------------------------------------------------------------
+- 全変数は Ver.14/.env（またはローカル移行後の同階層）で管理
+- envDir: vite.config.ts で明示的にプロジェクトルートを指定済み
+- .env は .gitignore 対象（絶対にコミットしない）
+- .env.example にキー名のみ記載（値なし）→ GitHub公開済み
+- ※ client/.env.local は envDir 設定により読み込まれない（使用禁止）
+
+----------------------------------------------------------------
+【ビルド・デプロイ手順】
+----------------------------------------------------------------
+# 開発
+npm run dev          # http://localhost:5173/
+
+# 本番ビルド
+npm run build        # → dist/public/ に出力
+
+# デプロイ（FTP）
+dist/public/ の中身をhetemlサーバーのドキュメントルートにアップ
+
+# GitHub
+git add .
+git commit -m "変更内容"
+git push
+
+----------------------------------------------------------------
+【Firestoreセキュリティルール】（適用済み 2026-04-10）
+----------------------------------------------------------------
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /stats/downloads {
+      allow read: if true;
+      allow create: if request.resource.data.keys().hasOnly(['count'])
+                    && request.resource.data.count == 1;
+      allow update: if request.resource.data.keys().hasOnly(['count'])
+                    && request.resource.data.count == resource.data.count + 1;
+      allow delete: if false;
+    }
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+
+----------------------------------------------------------------
+【既知の注意事項】
+----------------------------------------------------------------
+- OneDrive上でのビルドはPostCSS読み取りタイムアウトが発生する
+  → ローカル or 外付けSSDへの移行を推奨
+- PostCSS設定はファイル（postcss.config.js）ではなく
+  vite.config.ts にインライン化済み（タイムアウト回避）
+- Tailwind v3 と @tailwindcss/vite v4 が混在しているが、
+  PostCSS経由でv3を使用しているため問題なし
+- WordPress/GraphQLはサーバー移行時にURLの変更が必要
+※補足：20260410/下記ボリュームへ移植済み
+/Volumes/NDL_Data/Project/neural-design-lab-lp
+
+----------------------------------------------------------------
+【プロジェクトルート構成】
+----------------------------------------------------------------
+Ver.14/（またはローカル移行後のディレクトリ）
+├── client/
+│   ├── src/
+│   │   ├── components/   # UIコンポーネント
+│   │   ├── lib/          # firebase.ts / wordpress.ts
+│   │   ├── pages/        # home.tsx / Blog.tsx / BlogPost.tsx
+│   │   └── hooks/
+│   └── index.html
+├── dist/public/          # ビルド出力（FTPアップ対象）
+├── .env                  # 実際の環境変数（git管理外）
+├── .env.example          # キーのテンプレート（git管理内）
+├── .gitignore
+├── vite.config.ts        # envDir・PostCSS設定込み
+├── tailwind.config.ts
+├── package.json          # name: neural-design-lab-lp
+└── PROJECT_SUMMARY.txt   # このファイル
+
+================================================================
