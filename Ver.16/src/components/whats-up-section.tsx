@@ -119,8 +119,10 @@ function CaseStudyCard({ item }: { item: CardItem }) {
       href={item.url || "#"}
       target={item.url && !item.url.startsWith("#") ? "_blank" : "_self"}
       rel="noopener noreferrer"
-      className="group flex flex-col bg-white border-l-4 border-[#D4AF37] rounded-sm
-        shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 overflow-hidden"
+      onClick={(e) => !item.url && e.preventDefault()}
+      className={`group flex flex-col bg-white border-l-4 border-[#D4AF37] rounded-sm
+        shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 overflow-hidden
+        ${!item.url ? "cursor-default" : "cursor-pointer"}`}
     >
       {/* アイキャッチ */}
       <div className="aspect-video bg-[#1a2530] overflow-hidden relative">
