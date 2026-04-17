@@ -175,9 +175,11 @@ function NewsCard({ item }: { item: CardItem }) {
       href={item.url || "#"}
       target={item.url ? "_blank" : "_self"}
       rel="noopener noreferrer"
-      className="group flex flex-col bg-white border border-gray-100 rounded-sm
+      onClick={(e) => !item.url && e.preventDefault()}
+      className={`group flex flex-col bg-white border border-gray-100 rounded-sm
         hover:border-[#2C3E30]/20 hover:shadow-sm hover:-translate-y-0.5
-        transition-all duration-300 overflow-hidden"
+        transition-all duration-300 overflow-hidden
+        ${!item.url ? "cursor-default" : "cursor-pointer"}`}
     >
       {/* アイキャッチ */}
       <div className="aspect-video bg-[#EEF0ED] overflow-hidden relative">
