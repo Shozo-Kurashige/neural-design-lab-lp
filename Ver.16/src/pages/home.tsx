@@ -145,7 +145,8 @@ export default function Home() {
             style={{ backgroundImage: "url('/Opening_bk.webp')" }}
           />
 
-          <div className="absolute inset-0 bg-black/10 z-10" />
+          {/* 背景画像が何に変わっても文字視認性を担保する恒久オーバーレイ */}
+          <div className="absolute inset-0 bg-black/40 z-10" />
 
           <motion.div
             initial={{ opacity: 0 }}
@@ -169,7 +170,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1.2, delay: 0.5, ease: "easeOut" }}
-              className="text-white text-sm md:text-xl font-bold tracking-[0.3em] mb-6 drop-shadow-lg"
+              className="text-white text-sm md:text-xl font-bold tracking-[0.3em] mb-6 drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]"
             >
               ニッポンの中小企業と地方のために
             </motion.p>
@@ -186,7 +187,7 @@ export default function Home() {
                       delay: 1.2 + index * 0.15,
                       ease: "easeOut",
                     }}
-                    className="drop-shadow-[0_0_70px_rgba(0,0,0,1)] inline-block"
+                    className="drop-shadow-[0_2px_16px_rgba(0,0,0,1)] [text-shadow:0_0_40px_rgba(0,0,0,0.8),0_2px_4px_rgba(0,0,0,0.9)] inline-block"
                   >
                     {char}
                   </motion.span>
@@ -203,7 +204,7 @@ export default function Home() {
                       delay: 2.2 + index * 0.15,
                       ease: "easeOut",
                     }}
-                    className="drop-shadow-[0_0_70px_rgba(0,0,0,1)] inline-block"
+                    className="drop-shadow-[0_2px_16px_rgba(0,0,0,1)] [text-shadow:0_0_40px_rgba(0,0,0,0.8),0_2px_4px_rgba(0,0,0,0.9)] inline-block"
                   >
                     {char}
                   </motion.span>
@@ -245,22 +246,24 @@ export default function Home() {
                     item.isHighlight
                       ? {
                           scale: 1.05,
-                          backgroundColor: "rgba(212, 175, 55, 0.6)",
-                          borderColor: "#FFF",
-                          boxShadow: "0 0 30px rgba(212, 175, 55, 0.6)",
+                          backgroundColor: "rgba(212, 175, 55, 0.50)",
+                          borderColor: "rgba(255, 255, 255, 0.80)",
+                          boxShadow: "0 0 30px rgba(212, 175, 55, 0.55)",
                         }
                       : {
                           scale: 1.05,
-                          backgroundColor: "rgba(26, 37, 48, 0.5)",
-                          borderColor: "#D4AF37",
-                          boxShadow: "0 0 20px rgba(212, 175, 55, 0.4)",
+                          backgroundColor: "rgba(255, 255, 255, 0.20)",
+                          borderColor: "rgba(255, 255, 255, 0.80)",
+                          boxShadow: "0 0 20px rgba(255, 255, 255, 0.15)",
                         }
                   }
                   style={{ willChange: "transform, opacity" }}
-                  className={`w-36 h-36 md:w-48 md:h-48 rounded-full backdrop-blur-md border shadow-[0_8px_32px_rgba(0,0,0,0.3)] flex flex-col items-center justify-center p-4 text-center cursor-pointer group ${item.orderClass} ${
+                  className={`w-36 h-36 md:w-48 md:h-48 rounded-full backdrop-blur-md border
+                    flex flex-col items-center justify-center p-4 text-center cursor-pointer group
+                    ${item.orderClass} ${
                     item.isHighlight
-                      ? "bg-[#D4AF37]/35 border-[#D4AF37]/80 text-white shadow-[0_0_15px_rgba(212,175,55,0.4)]"
-                      : "bg-[#1A2530]/35 border-[#D4AF37]/40 text-white"
+                      ? "bg-[#D4AF37]/20 border-[#D4AF37]/50 text-white shadow-[0_0_20px_rgba(212,175,55,0.25)]"
+                      : "bg-white/10 border-white/20 text-white shadow-[0_4px_20px_rgba(0,0,0,0.25)]"
                   }`}
                 >
                   {item.isHighlight && (
