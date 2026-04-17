@@ -240,40 +240,12 @@ function ColumnCard({ item }: { item: CardItem }) {
         hover:border-teal-500/30 hover:shadow-[0_0_16px_rgba(45,212,191,0.12)]
         hover:-translate-y-0.5 transition-all duration-300"
     >
-      {/* アイキャッチ */}
-      <div className="aspect-video bg-[#141e2b] overflow-hidden relative">
-        {item.imageUrl ? (
-          <>
-            <img
-              src={item.imageUrl}
-              alt={item.title}
-              className="w-full h-full object-cover opacity-60 group-hover:opacity-80
-                group-hover:scale-105 transition-all duration-700"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0f1923]/80 via-transparent to-transparent" />
-          </>
-        ) : (
-          <div className="w-full h-full flex items-center justify-center relative">
-            {/* グリッド演出 */}
-            <div
-              className="absolute inset-0 opacity-8"
-              style={{
-                backgroundImage:
-                  "linear-gradient(rgba(45,212,191,0.4) 1px, transparent 1px)," +
-                  "linear-gradient(90deg, rgba(45,212,191,0.4) 1px, transparent 1px)",
-                backgroundSize: "24px 24px",
-              }}
-            />
-            <BookOpen className="w-7 h-7 text-teal-400/30 relative z-10" />
-          </div>
-        )}
-        {/* COLUMN ラベル */}
-        <div className="absolute bottom-2 left-3 flex items-center gap-1.5 z-10">
-          <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse" />
-          <span className="text-teal-400 text-[9px] font-bold tracking-[0.2em] font-mono">
-            {item.badge || "COLUMN"}
-          </span>
-        </div>
+      {/* サムネ非表示 / COLUMNラベルのみ表示 */}
+      <div className="px-4 pt-3 flex items-center gap-1.5">
+        <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse" />
+        <span className="text-teal-400 text-[9px] font-bold tracking-[0.2em] font-mono">
+          {item.badge || "COLUMN"}
+        </span>
       </div>
 
       {/* テキスト */}
