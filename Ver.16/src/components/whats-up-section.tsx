@@ -393,7 +393,7 @@ export function WhatsUpSection() {
         const items: CardItem[] = (data.contents || []).map((n: any) => ({
           id: n.id,
           title: n.title,
-          snippet: truncate(n.body || n.excerpt || n.title, 60),
+          snippet: truncate(n.content || n.body || n.excerpt || n.title, 60),
           imageUrl: n.image?.url || n.eyecatch?.url,
           date: n.publishedDate || n.publishedAt,
           url: n.url,
