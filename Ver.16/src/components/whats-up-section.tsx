@@ -1,108 +1,129 @@
 /**
- * WhatsUpSection — Ver.16
- * 実績(Case Study) / お知らせ(News) / コラム(Column) を統合した
- * "NDLは常に動いている" を体現するダイナミックセクション
+ * WhatsUpSection — Ver.16 (ハイブリッド・ヘッドレス 3カラム構成)
+ *
+ * アーキテクチャ:
+ *   Column 1 [実績]      ← microCMS /works
+ *   Column 2 [お知らせ]  ← microCMS /news
+ *   Column 3 [Column]   ← WordPress REST API /wp-json/wp/v2/posts
+ *
+ * 各カラムは独立してデータフェッチ・ローディング管理するため、
+ * 一方のAPIがダウンしても他カラムのレンダリングをブロックしない。
  */
 import React, { useEffect, useState } from "react";
 import { FadeIn } from "@/components/fade-in";
-import { ArrowRight, Zap, BookOpen, Award, ChevronRight } from "lucide-react";
-import { getAllPosts } from "@/lib/wordpress";
+import { ArrowRight, Award, Bell, BookOpen, Zap } from "lucide-react";
 
-// ─────────────────────────────────────────
-// Types
-// ─────────────────────────────────────────
-type Category = "case-study" | "news" | "column";
-type FilterTab = "all" | Category;
+// ─────────────────────────────────────────────────────────
+// Utilities
+// ─────────────────────────────────────────────────────────
 
-type WhatsUpItem = {
-  id: string;
-  category: Category;
-  title: string;
-  snippet: string; // ~30文字
-  imageUrl?: string;
-  date: string;
-  url?: string;
-  tag?: string;
-};
-
-// ─────────────────────────────────────────
-// 静的データ：実績 (Case Study)
-// ─────────────────────────────────────────
-const CASE_STUDIES: WhatsUpItem[] = [
-  {
-    id: "cs-001",
-    category: "case-study",
-    title: "戦略マトリクスAIソルバー",
-    snippet: "経営判断を4象限で即可視化するWebアプリ。",
-    imageUrl: undefined,
-    date: "2026-03-15",
-    url: "#",
-    tag: "CASE STUDY",
-  },
-  {
-    id: "cs-002",
-    category: "case-study",
-    title: "Rock Spirits 公式サイト",
-    snippet: "飲食店のブランドをゼロから設計した事例。",
-    imageUrl: undefined,
-    date: "2026-02-20",
-    url: "#",
-    tag: "CASE STUDY",
-  },
-  {
-    id: "cs-003",
-    category: "case-study",
-    title: "TeamMood Report",
-    snippet: "チームの空気を数値で掴む組織診断ツール。",
-    imageUrl: undefined,
-    date: "2026-01-10",
-    url: "#",
-    tag: "CASE STUDY",
-  },
-];
-
-// ─────────────────────────────────────────
-// Tab 定義
-// ─────────────────────────────────────────
-const TABS: { key: FilterTab; label: string; icon: React.ReactNode }[] = [
-  { key: "all",        label: "ALL",     icon: <Zap className="w-3.5 h-3.5" /> },
-  { key: "case-study", label: "実績",    icon: <Award className="w-3.5 h-3.5" /> },
-  { key: "news",       label: "お知らせ", icon: <ChevronRight className="w-3.5 h-3.5" /> },
-  { key: "column",     label: "Column",  icon: <BookOpen className="w-3.5 h-3.5" /> },
-];
-
-// ─────────────────────────────────────────
-// Helpers
-// ─────────────────────────────────────────
-function formatDate(dateStr: string) {
-  const d = new Date(dateStr);
-  if (isNaN(d.getTime())) return "";
-  return d.toLocaleDateString("ja-JP").replace(/\//g, ".");
+/** HTMLタグを除去してプレーンテキスト化（XSSリスクなし） */
+function stripHtml(html: string): string {
+  return html
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#039;/g, "'")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
-function truncate(str: string, len = 32) {
-  if (!str) return "";
-  const plain = str.replace(/<[^>]+>/g, "");
+/** 文字数制限付きトリミング */
+function truncate(str: string, len = 48): string {
+  const plain = stripHtml(str);
   return plain.length > len ? plain.slice(0, len) + "…" : plain;
 }
 
-// ─────────────────────────────────────────
-// Card Components
-// ─────────────────────────────────────────
+/** 日付フォーマット */
+function formatDate(dateStr: string): string {
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return "";
+  return d.toLocaleDateString("ja-JP", {
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+  }).replace(/\//g, ".");
+}
 
-/** 実績カード：ビジュアル大きく、ゴールドボーダー */
-function CaseStudyCard({ item, featured }: { item: WhatsUpItem; featured?: boolean }) {
+/** microCMS カテゴリ名の正規化 */
+function normalizeMicroCmsCategory(cat?: any): string {
+  if (!cat) return "お知らせ";
+  if (Array.isArray(cat)) return cat[0]?.name || "お知らせ";
+  return typeof cat === "object" ? cat.name || "お知らせ" : String(cat);
+}
+
+// ─────────────────────────────────────────────────────────
+// Types
+// ─────────────────────────────────────────────────────────
+
+type CardItem = {
+  id: string;
+  title: string;
+  snippet: string;
+  imageUrl?: string;
+  date: string;
+  url?: string;
+  badge?: string;
+};
+
+type ColumnState = {
+  items: CardItem[];
+  loading: boolean;
+  error: boolean;
+};
+
+const INITIAL_STATE: ColumnState = { items: [], loading: true, error: false };
+
+// ─────────────────────────────────────────────────────────
+// フォールバック：静的実績データ
+// microCMS worksエンドポイント未作成時に表示
+// ─────────────────────────────────────────────────────────
+const STATIC_WORKS: CardItem[] = [
+  {
+    id: "cs-001",
+    title: "戦略マトリクスAIソルバー",
+    snippet: "現状課題と理想のギャップを4象限で即可視化。経営会議の議論を構造化するWebアプリ。",
+    date: "2026-03-15",
+    url: "https://github.com/Shozo-Kurashige",
+    badge: "Web App",
+  },
+  {
+    id: "cs-002",
+    title: "Rock Spirits 公式サイト",
+    snippet: "飲食店のブランドをゼロから設計。予約導線・SNS連携まで一気通貫で構築。",
+    date: "2026-02-20",
+    url: "#",
+    badge: "LP制作",
+  },
+  {
+    id: "cs-003",
+    title: "TeamMood Report",
+    snippet: "チームの空気を毎日数値化。Slackと連携した継続型の組織診断ツール。",
+    date: "2026-01-10",
+    url: "https://github.com/Shozo-Kurashige",
+    badge: "SaaS",
+  },
+];
+
+// ─────────────────────────────────────────────────────────
+// Card Components
+// ─────────────────────────────────────────────────────────
+
+/** 実績カード: ゴールドアクセント、ビジュアル強調 */
+function CaseStudyCard({ item }: { item: CardItem }) {
   return (
     <a
       href={item.url || "#"}
-      target={item.url && item.url !== "#" ? "_blank" : "_self"}
+      target={item.url && !item.url.startsWith("#") ? "_blank" : "_self"}
       rel="noopener noreferrer"
-      className={`group flex flex-col bg-white border border-[#D4AF37]/30 rounded-sm shadow-sm
-        hover:shadow-lg hover:-translate-y-1 transition-all duration-300 overflow-hidden
-        ${featured ? "md:col-span-2 lg:col-span-2" : ""}`}
+      className="group flex flex-col bg-white border-l-4 border-[#D4AF37] rounded-sm
+        shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 overflow-hidden"
     >
       {/* アイキャッチ */}
-      <div className={`relative overflow-hidden bg-[#1a2530] ${featured ? "aspect-[16/7]" : "aspect-video"}`}>
+      <div className="aspect-video bg-[#1a2530] overflow-hidden relative">
         {item.imageUrl ? (
           <img
             src={item.imageUrl}
@@ -110,33 +131,32 @@ function CaseStudyCard({ item, featured }: { item: WhatsUpItem; featured?: boole
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
           />
         ) : (
-          <div className="w-full h-full flex flex-col items-center justify-center gap-2 opacity-60">
-            <Award className="w-10 h-10 text-[#D4AF37]" />
-            <span className="text-[#D4AF37] text-xs font-bold tracking-widest">CASE STUDY</span>
+          <div className="w-full h-full flex flex-col items-center justify-center gap-2 opacity-40">
+            <Award className="w-8 h-8 text-[#D4AF37]" />
           </div>
         )}
-        {/* ゴールドボーダー：左端 */}
-        <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#D4AF37]" />
-        {/* バッジ */}
-        <span className="absolute top-3 right-3 bg-[#D4AF37] text-white text-[10px] font-bold
-          px-2 py-0.5 tracking-widest rounded-sm">
-          CASE STUDY
-        </span>
+        {item.badge && (
+          <span className="absolute top-2 right-2 bg-[#D4AF37] text-white
+            text-[9px] font-bold px-2 py-0.5 rounded-sm tracking-widest">
+            {item.badge}
+          </span>
+        )}
       </div>
 
       {/* テキスト */}
-      <div className="p-5 flex flex-col flex-1">
-        <h3 className={`font-['Noto_Serif_JP'] font-bold text-[#2C3E30] mb-2 leading-snug
-          group-hover:text-[#D4AF37] transition-colors
-          ${featured ? "text-xl md:text-2xl" : "text-base md:text-lg"}`}>
+      <div className="p-4 flex flex-col flex-1">
+        <h4 className="text-sm font-bold text-[#2C3E30] leading-snug mb-2
+          group-hover:text-[#D4AF37] transition-colors font-['Noto_Serif_JP'] line-clamp-2">
           {item.title}
-        </h3>
-        <p className="text-sm text-gray-500 leading-relaxed flex-1">{item.snippet}</p>
-        <div className="mt-4 flex items-center justify-between">
-          <time className="text-xs text-gray-400">{formatDate(item.date)}</time>
-          <span className="flex items-center gap-1 text-xs font-bold text-[#2C3E30]
+        </h4>
+        <p className="text-xs text-gray-500 leading-relaxed flex-1 line-clamp-3">
+          {item.snippet}
+        </p>
+        <div className="mt-3 flex items-center justify-between">
+          <time className="text-[10px] text-gray-400">{formatDate(item.date)}</time>
+          <span className="flex items-center gap-1 text-[10px] font-bold text-[#2C3E30]/60
             group-hover:text-[#D4AF37] transition-colors">
-            詳しく見る <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            詳しく <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
           </span>
         </div>
       </div>
@@ -144,57 +164,64 @@ function CaseStudyCard({ item, featured }: { item: WhatsUpItem; featured?: boole
   );
 }
 
-/** お知らせカード：コンパクト、[UPDATE]タグ、鮮度強調 */
-function NewsCard({ item }: { item: WhatsUpItem }) {
-  const isNew = (new Date().getTime() - new Date(item.date).getTime()) < 1000 * 60 * 60 * 24 * 30;
+/** お知らせカード: コンパクト、バッジ、鮮度感 */
+function NewsCard({ item }: { item: CardItem }) {
+  const isNew =
+    new Date().getTime() - new Date(item.date).getTime() < 1000 * 60 * 60 * 24 * 30;
 
   return (
     <a
       href={item.url || "#"}
       target={item.url ? "_blank" : "_self"}
       rel="noopener noreferrer"
-      className="group flex flex-col bg-[#FDFBF7] border border-[#2C3E30]/10 rounded-sm
-        hover:bg-white hover:shadow-md hover:-translate-y-1 transition-all duration-300 overflow-hidden"
+      className="group flex flex-col bg-white border border-gray-100 rounded-sm
+        hover:border-[#2C3E30]/20 hover:shadow-sm hover:-translate-y-0.5
+        transition-all duration-300 overflow-hidden"
     >
       {/* アイキャッチ */}
       <div className="aspect-video bg-[#EEF0ED] overflow-hidden relative">
         {item.imageUrl ? (
-          <img src={item.imageUrl} alt={item.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+          <img
+            src={item.imageUrl}
+            alt={item.title}
+            className="w-full h-full object-cover opacity-90 group-hover:opacity-100
+              group-hover:scale-105 transition-all duration-700"
+          />
         ) : (
-          <div className="w-full h-full flex items-center justify-center gap-2">
-            <Zap className="w-6 h-6 text-[#2C3E30]/30" />
+          <div className="w-full h-full flex items-center justify-center">
+            <Bell className="w-6 h-6 text-[#2C3E30]/20" />
           </div>
         )}
         {isNew && (
-          <span className="absolute top-2 left-2 bg-emerald-500 text-white text-[9px] font-bold
-            px-1.5 py-0.5 rounded-sm tracking-wider animate-pulse">
+          <span className="absolute top-2 left-2 bg-emerald-500 text-white
+            text-[9px] font-bold px-1.5 py-0.5 rounded-sm tracking-wider">
             NEW
           </span>
         )}
       </div>
 
       {/* テキスト */}
-      <div className="p-4 flex flex-col flex-1">
-        {/* バッジ行 */}
+      <div className="p-3 flex flex-col flex-1">
         <div className="flex items-center gap-2 mb-2">
-          <span className="bg-[#2C3E30]/8 text-[#2C3E30] border border-[#2C3E30]/15
-            text-[10px] font-bold px-2 py-0.5 rounded-sm tracking-wider">
-            {item.tag || "お知らせ"}
-          </span>
-          <time className="text-[11px] text-gray-400 ml-auto">{formatDate(item.date)}</time>
+          {item.badge && (
+            <span className="bg-[#2C3E30]/6 text-[#2C3E30] border border-[#2C3E30]/12
+              text-[9px] font-bold px-2 py-0.5 rounded-sm tracking-wider shrink-0">
+              {item.badge}
+            </span>
+          )}
+          <time className="text-[10px] text-gray-400 ml-auto">{formatDate(item.date)}</time>
         </div>
-
-        <h3 className="text-sm font-bold text-[#2C3E30] leading-snug mb-2
+        <h4 className="text-sm font-bold text-[#2C3E30] leading-snug mb-1.5
           group-hover:text-[#D4AF37] transition-colors line-clamp-2">
           {item.title}
-        </h3>
-        <p className="text-xs text-gray-500 leading-relaxed flex-1 line-clamp-2">{item.snippet}</p>
-
+        </h4>
+        <p className="text-xs text-gray-500 leading-relaxed line-clamp-2 flex-1">
+          {item.snippet}
+        </p>
         {item.url && (
-          <div className="mt-3 flex items-center gap-1 text-[11px] font-bold text-[#2C3E30]/60
-            group-hover:text-[#D4AF37] transition-colors">
-            READ <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+          <div className="mt-2 flex items-center gap-1 text-[10px] text-[#2C3E30]/50
+            group-hover:text-[#D4AF37] transition-colors font-bold">
+            READ <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
           </div>
         )}
       </div>
@@ -202,66 +229,69 @@ function NewsCard({ item }: { item: WhatsUpItem }) {
   );
 }
 
-/** Columnカード：ダーク背景、サイバーパンク/フューチャリスティック */
-function ColumnCard({ item }: { item: WhatsUpItem }) {
+/** Columnカード: ダーク背景、サイバーパンク */
+function ColumnCard({ item }: { item: CardItem }) {
   return (
     <a
       href={item.url || "#"}
       target={item.url ? "_blank" : "_self"}
       rel="noopener noreferrer"
-      className="group flex flex-col bg-[#0f1923] rounded-sm overflow-hidden
-        hover:shadow-[0_0_20px_rgba(45,212,191,0.15)] hover:-translate-y-1
-        transition-all duration-300 border border-teal-500/10"
+      className="group flex flex-col bg-[#0f1923] rounded-sm overflow-hidden border border-teal-900/40
+        hover:border-teal-500/30 hover:shadow-[0_0_16px_rgba(45,212,191,0.12)]
+        hover:-translate-y-0.5 transition-all duration-300"
     >
       {/* アイキャッチ */}
-      <div className="aspect-video overflow-hidden relative bg-[#1a2530]">
+      <div className="aspect-video bg-[#141e2b] overflow-hidden relative">
         {item.imageUrl ? (
           <>
-            <img src={item.imageUrl} alt={item.title}
-              className="w-full h-full object-cover opacity-70 group-hover:opacity-90
-                group-hover:scale-105 transition-all duration-700" />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0f1923] via-transparent to-transparent" />
+            <img
+              src={item.imageUrl}
+              alt={item.title}
+              className="w-full h-full object-cover opacity-60 group-hover:opacity-80
+                group-hover:scale-105 transition-all duration-700"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0f1923]/80 via-transparent to-transparent" />
           </>
         ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            {/* グリッドライン演出 */}
-            <div className="absolute inset-0 opacity-10"
+          <div className="w-full h-full flex items-center justify-center relative">
+            {/* グリッド演出 */}
+            <div
+              className="absolute inset-0 opacity-8"
               style={{
                 backgroundImage:
-                  "linear-gradient(rgba(45,212,191,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(45,212,191,0.5) 1px, transparent 1px)",
-                backgroundSize: "20px 20px",
+                  "linear-gradient(rgba(45,212,191,0.4) 1px, transparent 1px)," +
+                  "linear-gradient(90deg, rgba(45,212,191,0.4) 1px, transparent 1px)",
+                backgroundSize: "24px 24px",
               }}
             />
-            <BookOpen className="w-8 h-8 text-teal-400/40 relative z-10" />
+            <BookOpen className="w-7 h-7 text-teal-400/30 relative z-10" />
           </div>
         )}
         {/* COLUMN ラベル */}
-        <div className="absolute bottom-2 left-3 flex items-center gap-1.5">
+        <div className="absolute bottom-2 left-3 flex items-center gap-1.5 z-10">
           <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse" />
-          <span className="text-teal-400 text-[10px] font-bold tracking-[0.2em] font-mono">
-            COLUMN
+          <span className="text-teal-400 text-[9px] font-bold tracking-[0.2em] font-mono">
+            {item.badge || "COLUMN"}
           </span>
         </div>
       </div>
 
       {/* テキスト */}
       <div className="p-4 flex flex-col flex-1">
-        <h3 className="text-sm font-bold text-white/90 leading-snug mb-3
-          group-hover:text-teal-300 transition-colors line-clamp-2 font-['Noto_Serif_JP']">
+        <h4 className="text-sm font-bold text-white/85 leading-snug mb-3
+          group-hover:text-teal-300 transition-colors font-['Noto_Serif_JP'] line-clamp-2">
           {item.title}
-        </h3>
-
-        {/* スニペット：モノスペース・アクセントカラー */}
-        <p className="text-xs text-teal-400/70 font-mono leading-relaxed flex-1 line-clamp-2
-          border-l-2 border-teal-500/30 pl-2">
+        </h4>
+        {/* スニペット：モノスペース */}
+        <p className="text-xs text-teal-400/65 font-mono leading-relaxed flex-1
+          border-l-2 border-teal-800/60 pl-2.5 line-clamp-3">
           {item.snippet}
         </p>
-
         <div className="mt-3 flex items-center justify-between">
-          <time className="text-[10px] text-white/30 font-mono">{formatDate(item.date)}</time>
-          <span className="text-[11px] text-teal-400/60 group-hover:text-teal-300
+          <time className="text-[10px] text-white/25 font-mono">{formatDate(item.date)}</time>
+          <span className="text-[10px] text-teal-500/60 group-hover:text-teal-300
             flex items-center gap-1 transition-colors font-mono">
-            READ <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+            READ <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
           </span>
         </div>
       </div>
@@ -269,86 +299,172 @@ function ColumnCard({ item }: { item: WhatsUpItem }) {
   );
 }
 
-// ─────────────────────────────────────────
+// ─────────────────────────────────────────────────────────
+// Skeleton Loader
+// ─────────────────────────────────────────────────────────
+function CardSkeleton({ dark = false }: { dark?: boolean }) {
+  return (
+    <div className={`rounded-sm overflow-hidden animate-pulse ${dark ? "bg-[#141e2b]" : "bg-gray-100"}`}>
+      <div className={`aspect-video ${dark ? "bg-[#1a2530]" : "bg-gray-200"}`} />
+      <div className="p-4 space-y-2">
+        <div className={`h-2.5 rounded w-1/3 ${dark ? "bg-[#1a2530]" : "bg-gray-200"}`} />
+        <div className={`h-4 rounded w-4/5 ${dark ? "bg-[#1a2530]" : "bg-gray-200"}`} />
+        <div className={`h-3 rounded w-full ${dark ? "bg-[#1a2530]" : "bg-gray-200"}`} />
+        <div className={`h-3 rounded w-2/3 ${dark ? "bg-[#1a2530]" : "bg-gray-200"}`} />
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────
+// Column Header
+// ─────────────────────────────────────────────────────────
+function ColumnHeader({
+  icon,
+  label,
+  title,
+  accent,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  title: string;
+  accent: string;
+}) {
+  return (
+    <div className="mb-6 pb-4 border-b border-[#2C3E30]/10">
+      <span className={`flex items-center gap-1.5 text-xs font-bold tracking-widest uppercase mb-2 ${accent}`}>
+        {icon}
+        {label}
+      </span>
+      <h3 className="text-lg font-['Noto_Serif_JP'] font-bold text-[#2C3E30]">{title}</h3>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────
 // Main Section
-// ─────────────────────────────────────────
+// ─────────────────────────────────────────────────────────
 export function WhatsUpSection() {
-  const [activeTab, setActiveTab] = useState<FilterTab>("all");
-  const [newsItems, setNewsItems] = useState<WhatsUpItem[]>([]);
-  const [columnItems, setColumnItems] = useState<WhatsUpItem[]>([]);
-  const [loadingNews, setLoadingNews] = useState(true);
-  const [loadingColumns, setLoadingColumns] = useState(true);
+  const [works, setWorks] = useState<ColumnState>(INITIAL_STATE);
+  const [news, setNews] = useState<ColumnState>(INITIAL_STATE);
+  const [columns, setColumns] = useState<ColumnState>(INITIAL_STATE);
 
-  // ── microCMS: お知らせ取得 ──
+  const domain = import.meta.env.VITE_MICROCMS_SERVICE_DOMAIN as string;
+  const apiKey = import.meta.env.VITE_MICROCMS_API_KEY as string;
+  const worksEndpoint = import.meta.env.VITE_MICROCMS_WORKS_ENDPOINT as string || "works";
+  const wpRestUrl = import.meta.env.VITE_WORDPRESS_REST_URL as string;
+
+  // ── Column 1: microCMS 実績 ─────────────────────────────
   useEffect(() => {
-    const domain = import.meta.env.VITE_MICROCMS_SERVICE_DOMAIN;
-    const apiKey = import.meta.env.VITE_MICROCMS_API_KEY;
-
     if (!domain || !apiKey) {
-      setLoadingNews(false);
+      // 環境変数未設定 → 静的フォールバック
+      setWorks({ items: STATIC_WORKS, loading: false, error: false });
+      return;
+    }
+
+    fetch(`https://${domain}.microcms.io/api/v1/${worksEndpoint}?limit=4`, {
+      headers: { "X-MICROCMS-API-KEY": apiKey },
+    })
+      .then((r) => {
+        if (!r.ok) throw new Error(`microCMS works: ${r.status}`);
+        return r.json();
+      })
+      .then((data) => {
+        const items: CardItem[] = (data.contents || []).map((w: any) => ({
+          id: w.id,
+          title: w.title,
+          snippet: truncate(w.description || w.snippet || w.title, 60),
+          imageUrl: w.eyecatch?.url || w.thumbnail?.url,
+          date: w.publishedDate || w.publishedAt,
+          url: w.url || w.link,
+          badge: normalizeMicroCmsCategory(w.category) || "実績",
+        }));
+        // microCMSにコンテンツがなければ静的データをフォールバック
+        setWorks({ items: items.length > 0 ? items : STATIC_WORKS, loading: false, error: false });
+      })
+      .catch((e) => {
+        console.warn("microCMS works 取得失敗（静的データを使用）:", e.message);
+        setWorks({ items: STATIC_WORKS, loading: false, error: false });
+      });
+  }, []);
+
+  // ── Column 2: microCMS お知らせ ─────────────────────────
+  useEffect(() => {
+    if (!domain || !apiKey) {
+      setNews({ items: [], loading: false, error: true });
       return;
     }
 
     fetch(`https://${domain}.microcms.io/api/v1/news?limit=5`, {
       headers: { "X-MICROCMS-API-KEY": apiKey },
     })
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error(`microCMS news: ${r.status}`);
+        return r.json();
+      })
       .then((data) => {
-        const items: WhatsUpItem[] = (data.contents || []).map((n: any) => ({
+        const items: CardItem[] = (data.contents || []).map((n: any) => ({
           id: n.id,
-          category: "news" as Category,
           title: n.title,
-          snippet: truncate(n.body || n.excerpt || n.title, 32),
+          snippet: truncate(n.body || n.excerpt || n.title, 60),
           imageUrl: n.eyecatch?.url,
           date: n.publishedDate || n.publishedAt,
           url: n.url,
-          tag: getCategoryName(n.category),
+          badge: normalizeMicroCmsCategory(n.category),
         }));
-        setNewsItems(items);
+        setNews({ items, loading: false, error: false });
       })
-      .catch((e) => console.error("microCMS取得エラー:", e))
-      .finally(() => setLoadingNews(false));
+      .catch((e) => {
+        console.error("microCMS news 取得失敗:", e.message);
+        setNews({ items: [], loading: false, error: true });
+      });
   }, []);
 
-  // ── WordPress: コラム取得 ──
+  // ── Column 3: WordPress REST API コラム ─────────────────
   useEffect(() => {
-    getAllPosts()
-      .then((data) => {
-        if (!data) return;
-        const items: WhatsUpItem[] = data.slice(0, 4).map((p: any) => ({
-          id: p.slug,
-          category: "column" as Category,
-          title: p.title,
-          snippet: truncate(p.excerpt || p.title, 32),
-          imageUrl: p.featuredImage?.node?.sourceUrl,
-          date: p.date,
-          url: `/blog/${p.slug}`,
-          tag: "Column",
-        }));
-        setColumnItems(items);
+    const baseUrl = wpRestUrl || (() => {
+      // VITE_WORDPRESS_API_URL から REST URLを導出 (fallback)
+      const graphqlUrl = import.meta.env.VITE_WORDPRESS_API_URL as string;
+      return graphqlUrl ? graphqlUrl.replace("/graphql", "/wp-json/wp/v2") : "";
+    })();
+
+    if (!baseUrl) {
+      setColumns({ items: [], loading: false, error: true });
+      return;
+    }
+
+    fetch(`${baseUrl}/posts?per_page=4&_embed&_fields=id,date,slug,title,excerpt,_links,_embedded`)
+      .then((r) => {
+        if (!r.ok) throw new Error(`WP REST: ${r.status}`);
+        return r.json();
       })
-      .catch((e) => console.error("WordPress取得エラー:", e))
-      .finally(() => setLoadingColumns(false));
+      .then((posts: any[]) => {
+        const items: CardItem[] = posts.map((p) => {
+          // アイキャッチ画像：_embed から取得
+          const media = p._embedded?.["wp:featuredmedia"];
+          const imageUrl = media?.[0]?.source_url;
+
+          return {
+            id: String(p.id),
+            title: stripHtml(p.title?.rendered || ""),
+            snippet: truncate(p.excerpt?.rendered || "", 60),
+            imageUrl,
+            date: p.date,
+            url: `/blog/${p.slug}`,
+            badge: "Column",
+          };
+        });
+        setColumns({ items, loading: false, error: false });
+      })
+      .catch((e) => {
+        console.error("WordPress REST 取得失敗:", e.message);
+        setColumns({ items: [], loading: false, error: true });
+      });
   }, []);
 
-  // ── 全アイテム統合 & ソート ──
-  const allItems: WhatsUpItem[] = [...CASE_STUDIES, ...newsItems, ...columnItems].sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-  );
-
-  const filtered =
-    activeTab === "all" ? allItems : allItems.filter((i) => i.category === activeTab);
-
-  const isLoading = loadingNews || loadingColumns;
-
-  // ── カウント（タブバッジ用） ──
-  const counts = {
-    all: allItems.length,
-    "case-study": CASE_STUDIES.length,
-    news: newsItems.length,
-    column: columnItems.length,
-  };
-
+  // ─────────────────────────────────────────────────────────
+  // Render
+  // ─────────────────────────────────────────────────────────
   return (
     <section
       id="whats-up"
@@ -356,109 +472,116 @@ export function WhatsUpSection() {
     >
       <div className="container mx-auto px-6 max-w-6xl">
 
-        {/* ── ヘッダー ── */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
-          <FadeIn>
-            <div>
-              <span className="text-[#D4AF37] font-bold tracking-widest text-sm uppercase block mb-3 flex items-center gap-2">
-                <Zap className="w-4 h-4" />
-                WHAT'S UP
-              </span>
-              <h2 className="text-3xl md:text-4xl font-['Noto_Serif_JP'] font-bold text-[#2C3E30]">
-                NDLの今
-              </h2>
-              <p className="text-sm text-gray-500 mt-2">
-                実績・お知らせ・思考の断片をリアルタイムに。
-              </p>
-            </div>
-          </FadeIn>
-        </div>
-
-        {/* ── フィルタータブ ── */}
-        <FadeIn delay={100}>
-          <div className="flex flex-wrap gap-2 mb-10">
-            {TABS.map((tab) => (
-              <button
-                key={tab.key}
-                onClick={() => setActiveTab(tab.key)}
-                className={`flex items-center gap-1.5 px-4 py-2 text-sm font-bold rounded-sm
-                  border transition-all duration-200
-                  ${
-                    activeTab === tab.key
-                      ? "bg-[#2C3E30] text-white border-[#2C3E30] shadow-sm"
-                      : "bg-white text-[#2C3E30]/60 border-[#2C3E30]/20 hover:border-[#2C3E30]/60 hover:text-[#2C3E30]"
-                  }`}
-              >
-                {tab.icon}
-                {tab.label}
-                {counts[tab.key] > 0 && (
-                  <span
-                    className={`text-[10px] px-1.5 py-0.5 rounded-full font-normal
-                      ${activeTab === tab.key
-                        ? "bg-white/20 text-white"
-                        : "bg-[#2C3E30]/8 text-[#2C3E30]/50"
-                      }`}
-                  >
-                    {counts[tab.key]}
-                  </span>
-                )}
-              </button>
-            ))}
+        {/* セクションヘッダー */}
+        <FadeIn>
+          <div className="mb-14">
+            <span className="text-[#D4AF37] font-bold tracking-widest text-sm uppercase
+              flex items-center gap-2 mb-3">
+              <Zap className="w-4 h-4" />
+              WHAT'S UP
+            </span>
+            <h2 className="text-3xl md:text-4xl font-['Noto_Serif_JP'] font-bold text-[#2C3E30]">
+              NDLの今
+            </h2>
+            <p className="text-sm text-gray-500 mt-2">
+              実績・お知らせ・思考の断片をリアルタイムに。
+            </p>
           </div>
         </FadeIn>
 
-        {/* ── グリッド ── */}
-        {isLoading ? (
-          /* スケルトンローダー */
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[...Array(6)].map((_, i) => (
-              <div key={i} className="rounded-sm bg-white animate-pulse">
-                <div className="aspect-video bg-gray-200" />
-                <div className="p-4 space-y-2">
-                  <div className="h-3 bg-gray-200 rounded w-1/3" />
-                  <div className="h-4 bg-gray-200 rounded w-3/4" />
-                  <div className="h-3 bg-gray-200 rounded w-full" />
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : filtered.length === 0 ? (
-          <div className="text-center py-16 text-gray-400">
-            <p>現在表示できるコンテンツがありません。</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filtered.map((item, index) => {
-              /* ALL表示時：最初のcase-studyをfeatured（2カラム幅）に */
-              const isFeatured =
-                activeTab === "all" &&
-                item.category === "case-study" &&
-                index === filtered.findIndex((i) => i.category === "case-study");
+        {/* 3カラムグリッド */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-6 items-start">
 
-              return (
-                <FadeIn
-                  key={item.id}
-                  delay={index * 60}
-                  className={isFeatured ? "md:col-span-2 lg:col-span-2" : ""}
-                >
-                  {item.category === "case-study" && (
-                    <CaseStudyCard item={item} featured={isFeatured} />
-                  )}
-                  {item.category === "news" && <NewsCard item={item} />}
-                  {item.category === "column" && <ColumnCard item={item} />}
-                </FadeIn>
-              );
-            })}
-          </div>
-        )}
+          {/* ── Column 1: 実績 ── */}
+          <FadeIn delay={0}>
+            <div>
+              <ColumnHeader
+                icon={<Award className="w-3.5 h-3.5" />}
+                label="Case Study"
+                title="実績"
+                accent="text-[#D4AF37]"
+              />
+              <div className="flex flex-col gap-4">
+                {works.loading ? (
+                  [0, 1, 2].map((i) => <CardSkeleton key={i} />)
+                ) : works.items.length > 0 ? (
+                  works.items.map((item) => (
+                    <CaseStudyCard key={item.id} item={item} />
+                  ))
+                ) : (
+                  <p className="text-xs text-gray-400 py-8 text-center">
+                    準備中です。
+                  </p>
+                )}
+              </div>
+            </div>
+          </FadeIn>
+
+          {/* ── Column 2: お知らせ ── */}
+          <FadeIn delay={100}>
+            <div>
+              <ColumnHeader
+                icon={<Bell className="w-3.5 h-3.5" />}
+                label="News"
+                title="お知らせ"
+                accent="text-emerald-600"
+              />
+              <div className="flex flex-col gap-4">
+                {news.loading ? (
+                  [0, 1, 2].map((i) => <CardSkeleton key={i} />)
+                ) : news.error ? (
+                  <p className="text-xs text-gray-400 py-8 text-center">
+                    現在取得できません。
+                  </p>
+                ) : news.items.length > 0 ? (
+                  news.items.map((item) => (
+                    <NewsCard key={item.id} item={item} />
+                  ))
+                ) : (
+                  <p className="text-xs text-gray-400 py-8 text-center">
+                    準備中です。
+                  </p>
+                )}
+              </div>
+            </div>
+          </FadeIn>
+
+          {/* ── Column 3: コラム ── */}
+          <FadeIn delay={200}>
+            {/* ダーク背景カラム */}
+            <div className="bg-[#0a1018] rounded-sm p-5">
+              {/* ColumnHeader をダーク向けにインライン定義 */}
+              <div className="mb-6 pb-4 border-b border-teal-900/30">
+                <span className="flex items-center gap-1.5 text-xs font-bold tracking-widest uppercase mb-2 text-teal-400">
+                  <BookOpen className="w-3.5 h-3.5" />
+                  Column
+                </span>
+                <h3 className="text-lg font-['Noto_Serif_JP'] font-bold text-white/80">
+                  思考の断片
+                </h3>
+              </div>
+              <div className="flex flex-col gap-4 -mt-2">
+                {columns.loading ? (
+                  [0, 1, 2].map((i) => <CardSkeleton key={i} dark />)
+                ) : columns.error ? (
+                  <p className="text-xs text-teal-400/40 py-8 text-center font-mono">
+                    // connection failed
+                  </p>
+                ) : columns.items.length > 0 ? (
+                  columns.items.map((item) => (
+                    <ColumnCard key={item.id} item={item} />
+                  ))
+                ) : (
+                  <p className="text-xs text-teal-400/40 py-8 text-center font-mono">
+                    // no entries
+                  </p>
+                )}
+              </div>
+            </div>
+          </FadeIn>
+
+        </div>
       </div>
     </section>
   );
-}
-
-// ── microCMS カテゴリ名ユーティリティ ──
-function getCategoryName(cat?: any): string {
-  if (!cat) return "お知らせ";
-  if (Array.isArray(cat)) return cat[0]?.name || "お知らせ";
-  return typeof cat === "object" ? cat.name || "お知らせ" : String(cat);
 }
