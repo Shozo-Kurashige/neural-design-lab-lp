@@ -33,11 +33,11 @@ export function Header({
 
   const menuItems = [
     { label: "大切にしていること", href: "/#philosophy" },
+    { label: "最新情報", href: "/#whats-up" },
     { label: "サービス", href: "/#services" },
     { label: "技術・セキュリティ", href: "/#skills" },
     { label: "導入の流れ", href: "/#process" },
     { label: "料金", href: "/#price" },
-    { label: "ブログ", href: "/#blog" },
     { label: "私たちについて", href: "/#about" },
   ];
 

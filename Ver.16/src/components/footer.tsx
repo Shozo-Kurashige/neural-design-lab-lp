@@ -79,43 +79,33 @@ export function Footer({ simple = false }: { simple?: boolean }) {
             </h3>
             <ul className="space-y-3 text-sm text-gray-400">
               <li>
-                <a
-                  href="/#services"
-                  className="hover:text-[#D4AF37] transition-colors"
-                >
+                <a href="/#philosophy" className="hover:text-[#D4AF37] transition-colors">
+                  大切にしていること
+                </a>
+              </li>
+              <li>
+                <a href="/#whats-up" className="hover:text-[#D4AF37] transition-colors">
+                  最新情報
+                </a>
+              </li>
+              <li>
+                <a href="/#services" className="hover:text-[#D4AF37] transition-colors">
                   サービス
                 </a>
               </li>
               <li>
-                <a
-                  href="/#skills"
-                  className="hover:text-[#D4AF37] transition-colors"
-                >
+                <a href="/#skills" className="hover:text-[#D4AF37] transition-colors">
                   技術・セキュリティ
                 </a>
               </li>
               <li>
-                <a
-                  href="/#process"
-                  className="hover:text-[#D4AF37] transition-colors"
-                >
+                <a href="/#process" className="hover:text-[#D4AF37] transition-colors">
                   導入の流れ
                 </a>
               </li>
               <li>
-                <a
-                  href="/#price"
-                  className="hover:text-[#D4AF37] transition-colors"
-                >
-                  料金プラン
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/#blog"
-                  className="hover:text-[#D4AF37] transition-colors"
-                >
-                  ブログ
+                <a href="/#price" className="hover:text-[#D4AF37] transition-colors">
+                  料金
                 </a>
               </li>
             </ul>
