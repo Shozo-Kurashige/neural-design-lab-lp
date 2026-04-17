@@ -128,6 +128,7 @@ function CaseStudyCard({ item }: { item: CardItem }) {
           <img
             src={item.imageUrl}
             alt={item.title}
+            loading="lazy"
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
           />
         ) : (
@@ -184,6 +185,7 @@ function NewsCard({ item }: { item: CardItem }) {
           <img
             src={item.imageUrl}
             alt={item.title}
+            loading="lazy"
             className="w-full h-full object-cover opacity-90 group-hover:opacity-100
               group-hover:scale-105 transition-all duration-700"
           />
@@ -229,16 +231,25 @@ function NewsCard({ item }: { item: CardItem }) {
   );
 }
 
-/** Columnカード: ダーク背景、サイバーパンク */
+/** Columnカード: ダーク背景、サイバーパンク
+ *  ホバー設計メモ:
+ *  - bg: #0f1923 → #141e2b（微かに明るく）
+ *  - 左アクセントボーダー: teal-800/40 → teal-400/70（強調）
+ *  - コンテンツ全体を -translate-y-1（4px上）でスライド
+ *  - モバイル(touch): CSS :hover はタップ離脱で即解除 → 残像なし
+ */
 function ColumnCard({ item }: { item: CardItem }) {
   return (
     <a
       href={item.url || "#"}
       target={item.url ? "_blank" : "_self"}
       rel="noopener noreferrer"
-      className="group flex flex-col bg-[#0f1923] rounded-sm overflow-hidden border border-teal-900/40
-        hover:border-teal-500/30 hover:shadow-[0_0_16px_rgba(45,212,191,0.12)]
-        hover:-translate-y-0.5 transition-all duration-300"
+      className="group flex flex-col bg-[#0f1923] hover:bg-[#141e2b]
+        rounded-sm overflow-hidden
+        border border-teal-900/40 border-l-2 border-l-teal-800/40
+        hover:border-teal-900/60 hover:border-l-teal-400/70
+        hover:shadow-[0_0_20px_rgba(45,212,191,0.15)]
+        transition-all duration-300"
     >
       {/* サムネ非表示 / COLUMNラベルのみ表示 */}
       <div className="px-4 pt-3 flex items-center gap-1.5">
@@ -248,22 +259,25 @@ function ColumnCard({ item }: { item: CardItem }) {
         </span>
       </div>
 
-      {/* テキスト */}
-      <div className="p-4 flex flex-col flex-1">
+      {/* テキスト（ホバーで上スライド） */}
+      <div className="p-4 flex flex-col flex-1
+        translate-y-0 group-hover:-translate-y-1 transition-transform duration-300">
         <h4 className="text-sm font-bold text-white/85 leading-snug mb-3
-          group-hover:text-teal-300 transition-colors font-['Noto_Serif_JP'] line-clamp-2">
+          group-hover:text-teal-300 transition-colors duration-300
+          font-['Noto_Serif_JP'] line-clamp-2">
           {item.title}
         </h4>
-        {/* スニペット：モノスペース */}
+        {/* スニペット：モノスペース・左アクセントライン */}
         <p className="text-xs text-teal-400/65 font-mono leading-relaxed flex-1
-          border-l-2 border-teal-800/60 pl-2.5 line-clamp-3">
+          border-l-2 border-teal-800/60 group-hover:border-teal-400/50
+          pl-2.5 line-clamp-3 transition-colors duration-300">
           {item.snippet}
         </p>
         <div className="mt-3 flex items-center justify-between">
           <time className="text-[10px] text-white/25 font-mono">{formatDate(item.date)}</time>
           <span className="text-[10px] text-teal-500/60 group-hover:text-teal-300
-            flex items-center gap-1 transition-colors font-mono">
-            READ <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+            flex items-center gap-1 transition-colors duration-300 font-mono">
+            READ <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform duration-300" />
           </span>
         </div>
       </div>
@@ -276,8 +290,9 @@ function ColumnCard({ item }: { item: CardItem }) {
 // ─────────────────────────────────────────────────────────
 function CardSkeleton({ dark = false }: { dark?: boolean }) {
   return (
-    <div className={`rounded-sm overflow-hidden animate-pulse ${dark ? "bg-[#141e2b]" : "bg-gray-100"}`}>
-      <div className={`aspect-video ${dark ? "bg-[#1a2530]" : "bg-gray-200"}`} />
+    <div className={`rounded-sm overflow-hidden animate-pulse ${dark ? "bg-[#141e2b] border border-teal-900/30" : "bg-gray-100"}`}>
+      {/* ライトカードのみアイキャッチ領域を表示（ダークはサムネなし） */}
+      {!dark && <div className="aspect-video bg-gray-200" />}
       <div className="p-4 space-y-2">
         <div className={`h-2.5 rounded w-1/3 ${dark ? "bg-[#1a2530]" : "bg-gray-200"}`} />
         <div className={`h-4 rounded w-4/5 ${dark ? "bg-[#1a2530]" : "bg-gray-200"}`} />
@@ -346,7 +361,7 @@ export function WhatsUpSection() {
           id: w.id,
           title: w.title,
           snippet: truncate(w.description || w.snippet || w.title, 60),
-          imageUrl: w.eyecatch?.url || w.thumbnail?.url,
+          imageUrl: w.image?.url || w.eyecatch?.url || w.thumbnail?.url,
           date: w.publishedDate || w.publishedAt,
           url: w.url || w.link,
           badge: normalizeMicroCmsCategory(w.category) || "実績",
@@ -379,7 +394,7 @@ export function WhatsUpSection() {
           id: n.id,
           title: n.title,
           snippet: truncate(n.body || n.excerpt || n.title, 60),
-          imageUrl: n.eyecatch?.url,
+          imageUrl: n.image?.url || n.eyecatch?.url,
           date: n.publishedDate || n.publishedAt,
           url: n.url,
           badge: normalizeMicroCmsCategory(n.category),
