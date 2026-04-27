@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Leaf, TrendingUp, Users, Bot } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { ServicesSection } from "@/components/services-section";
 import { Header } from "@/components/header";
 import { ProcessSection } from "@/components/process-section";
@@ -26,7 +25,6 @@ export default function Home() {
   const [isDiagnosticOpen, setIsDiagnosticOpen] = useState(false);
   const [showFloatingBtn, setShowFloatingBtn] = useState(false);
   const bannerRef = useRef<HTMLElement>(null);
-  const isMobile = useIsMobile();
 
   // ▼ GA4 トラッキングコードの動的注入（デプロイ時の消失対策）
   useEffect(() => {
@@ -152,16 +150,14 @@ export default function Home() {
 
           {/*
             backdrop-blur はモバイルでは無効化（GPU負荷が高いため）
-            PCのみ適用
+            PCのみ適用 — hidden md:block で CSS のみ制御
           */}
-          {!isMobile && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 2.0, delay: 6.0, ease: "easeInOut" }}
-              className="absolute inset-0 z-10 bg-white/20 backdrop-blur-sm"
-            />
-          )}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 2.0, delay: 6.0, ease: "easeInOut" }}
+            className="absolute inset-0 z-10 bg-white/20 backdrop-blur-sm hidden md:block"
+          />
 
           {/* ▼ ドラマチック・オープニング ▼ */}
           <motion.div
@@ -188,27 +184,14 @@ export default function Home() {
                 {"現場を知る。".split("").map((char, index) => (
                   <motion.span
                     key={`line1-${index}`}
-                    // モバイル: blurなし（opacityのみ）→ LCP高速化
-                    // PC: blurあり（リッチ表現維持）
-                    initial={isMobile
-                      ? { opacity: 0, y: 8 }
-                      : { opacity: 0, filter: "blur(12px)", y: 10 }
-                    }
-                    animate={isMobile
-                      ? { opacity: 1, y: 0 }
-                      : { opacity: 1, filter: "blur(0px)", y: 0 }
-                    }
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
                     transition={{
-                      duration: isMobile ? 0.6 : 1.0,
-                      delay: (isMobile ? 0.8 : 1.2) + index * 0.1,
+                      duration: 0.7,
+                      delay: 0.8 + index * 0.1,
                       ease: "easeOut",
                     }}
-                    // モバイル: シャドウ1層のみ / PC: 2層シャドウ
-                    className={`inline-block ${
-                      isMobile
-                        ? "drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]"
-                        : "drop-shadow-[0_2px_16px_rgba(0,0,0,1)] [text-shadow:0_0_40px_rgba(0,0,0,0.8),0_2px_4px_rgba(0,0,0,0.9)]"
-                    }`}
+                    className="inline-block drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]"
                   >
                     {char}
                   </motion.span>
@@ -218,24 +201,14 @@ export default function Home() {
                 {"明日を変える。".split("").map((char, index) => (
                   <motion.span
                     key={`line2-${index}`}
-                    initial={isMobile
-                      ? { opacity: 0, y: 8 }
-                      : { opacity: 0, filter: "blur(12px)", y: 10 }
-                    }
-                    animate={isMobile
-                      ? { opacity: 1, y: 0 }
-                      : { opacity: 1, filter: "blur(0px)", y: 0 }
-                    }
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
                     transition={{
-                      duration: isMobile ? 0.6 : 1.0,
-                      delay: (isMobile ? 1.4 : 2.2) + index * 0.1,
+                      duration: 0.7,
+                      delay: 1.5 + index * 0.1,
                       ease: "easeOut",
                     }}
-                    className={`inline-block ${
-                      isMobile
-                        ? "drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]"
-                        : "drop-shadow-[0_2px_16px_rgba(0,0,0,1)] [text-shadow:0_0_40px_rgba(0,0,0,0.8),0_2px_4px_rgba(0,0,0,0.9)]"
-                    }`}
+                    className="inline-block drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]"
                   >
                     {char}
                   </motion.span>
@@ -266,8 +239,20 @@ export default function Home() {
                 <motion.a
                   key={index}
                   href={item.href}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  initial={{
+                    opacity: 0,
+                    y: 20,
+                    backgroundColor: item.isHighlight
+                      ? "rgba(212, 175, 55, 1)"
+                      : "rgba(255, 255, 255, 0.9)",
+                  }}
+                  animate={{
+                    opacity: 1,
+                    y: 0,
+                    backgroundColor: item.isHighlight
+                      ? "rgba(212, 175, 55, 1)"
+                      : "rgba(255, 255, 255, 0.9)",
+                  }}
                   transition={{
                     duration: 0.8,
                     delay: 7.2 + index * 0.1,
@@ -277,26 +262,22 @@ export default function Home() {
                     item.isHighlight
                       ? {
                           scale: 1.05,
-                          backgroundColor: "rgba(212, 175, 55, 0.50)",
-                          borderColor: "rgba(255, 255, 255, 0.80)",
+                          backgroundColor: "rgba(212, 175, 55, 0.85)",
                           boxShadow: "0 0 30px rgba(212, 175, 55, 0.55)",
                         }
                       : {
                           scale: 1.05,
-                          backgroundColor: "rgba(255, 255, 255, 0.20)",
-                          borderColor: "rgba(255, 255, 255, 0.80)",
-                          boxShadow: "0 0 20px rgba(255, 255, 255, 0.15)",
+                          backgroundColor: "rgba(255, 255, 255, 1)",
+                          boxShadow: "0 0 20px rgba(212, 175, 55, 0.20)",
                         }
                   }
                   style={{ willChange: "transform, opacity" }}
-                  // backdrop-blur-md はモバイルでは省略（GPU負荷軽減）
                   className={`w-36 h-36 md:w-48 md:h-48 rounded-full border
-                    ${isMobile ? "" : "backdrop-blur-md"}
                     flex flex-col items-center justify-center p-4 text-center cursor-pointer group
                     ${item.orderClass} ${
                     item.isHighlight
-                      ? "bg-[#D4AF37]/20 border-[#D4AF37]/50 text-white shadow-[0_0_20px_rgba(212,175,55,0.25)]"
-                      : "bg-white/10 border-white/20 text-white shadow-[0_4px_20px_rgba(0,0,0,0.25)]"
+                      ? "border-[#D4AF37]/70 text-white shadow-[0_0_20px_rgba(212,175,55,0.30)]"
+                      : "border-gray-300 text-gray-800 shadow-sm"
                   }`}
                 >
                   {item.isHighlight && (
