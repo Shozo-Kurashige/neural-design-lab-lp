@@ -1,7 +1,7 @@
 ================================================================
 Neural Design Lab Official LP — プロジェクトサマリー
 ================================================================
-最終更新: 2026-04-10
+最終更新: 2026-04-29
 担当AI: Claude (セイ)
 補足追記：CEO藏重
 
@@ -136,23 +136,54 @@ service cloud.firestore {
 /Volumes/NDL_Data/Project/neural-design-lab-lp
 
 ----------------------------------------------------------------
+【バージョン履歴】
+----------------------------------------------------------------
+Ver.14  アーカイブ（旧安定版）
+Ver.15  安定版ベース
+Ver.16  ハイブリッドヘッドレス3カラム構成・microCMS/WordPress連携
+Ver.17  モバイルパフォーマンス改善
+          - Google Fonts 非同期読み込み（レンダリングブロック解消）
+          - useIsMobile() を Framer Motion から除去（リグレッション修正）
+          - アニメーションを opacity+y のみに簡素化（GPU負荷軽減）
+          - ボタンフラットデザイン化（Framer Motion で backgroundColor 明示管理）
+Ver.18  ニューロデザイン定義セクション追加（現在の本番バージョン）★
+          - 新規: neuro-design-section.tsx
+          - ダークグリーンバナーに一行定義を配置（ゴールドアクセント）
+          - 配置: WhatsUpSection → NeuroDesignSection → PHILOSOPHY の順
+          - SEOタグ: #業務改善 #DX #AI活用 #中小企業 #現場設計 #業務フロー
+
+----------------------------------------------------------------
+【現在のアクティブバージョン】
+----------------------------------------------------------------
+本番稼働 : Ver.18
+vite.config.ts の root / alias が Ver.18 を参照中
+ビルド出力: dist/public/（heteml FTPアップ対象）
+
+----------------------------------------------------------------
 【プロジェクトルート構成】
 ----------------------------------------------------------------
-Ver.14/（またはローカル移行後のディレクトリ）
-├── client/
-│   ├── src/
-│   │   ├── components/   # UIコンポーネント
-│   │   ├── lib/          # firebase.ts / wordpress.ts
-│   │   ├── pages/        # home.tsx / Blog.tsx / BlogPost.tsx
-│   │   └── hooks/
-│   └── index.html
+neural-design-lab-lp/
+├── Ver.14/               # アーカイブ
+├── Ver.15/               # 安定版
+├── Ver.16/               # ヘッドレス構成版
+├── Ver.17/               # モバイルパフォーマンス版
+├── Ver.18/               # 現在の本番バージョン ★
+│   └── src/
+│       ├── components/
+│       │   ├── neuro-design-section.tsx  ← Ver.18 新規追加
+│       │   ├── whats-up-section.tsx
+│       │   ├── services-section.tsx
+│       │   └── ...その他共通コンポーネント
+│       └── pages/
+│           └── home.tsx
 ├── dist/public/          # ビルド出力（FTPアップ対象）
 ├── .env                  # 実際の環境変数（git管理外）
 ├── .env.example          # キーのテンプレート（git管理内）
 ├── .gitignore
-├── vite.config.ts        # envDir・PostCSS設定込み
+├── vite.config.ts        # root=Ver.18 / envDir設定込み
 ├── tailwind.config.ts
-├── package.json          # name: neural-design-lab-lp
-└── PROJECT_SUMMARY.txt   # このファイル
+├── start-dev-network.command  # スマホ動作確認用（--host モード）
+├── package.json
+└── 0.PROJECT_SUMMARY.txt  # このファイル
 
 ================================================================
