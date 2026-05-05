@@ -146,17 +146,25 @@ Ver.17  モバイルパフォーマンス改善
           - useIsMobile() を Framer Motion から除去（リグレッション修正）
           - アニメーションを opacity+y のみに簡素化（GPU負荷軽減）
           - ボタンフラットデザイン化（Framer Motion で backgroundColor 明示管理）
-Ver.18  ニューロデザイン定義セクション追加（現在の本番バージョン）★
+Ver.18  ニューロデザイン定義セクション追加
           - 新規: neuro-design-section.tsx
           - ダークグリーンバナーに一行定義を配置（ゴールドアクセント）
           - 配置: WhatsUpSection → NeuroDesignSection → PHILOSOPHY の順
           - SEOタグ: #業務改善 #DX #AI活用 #中小企業 #現場設計 #業務フロー
+Ver.19  オープニング動画ヒーロー実装（現在の本番バージョン）★
+          - Opening_mov.mp4 を Hero に採用（Before_mov.webp をポスター）
+          - スマホ: 動画バナー（16:9+上下拡張）+ 動画終了後にメニューオーバーレイ
+            scale-[1.37] / origin-[center_37%] で構図調整
+            見出しパネルをビデオ上にフェードイン、ボタン群もスライドアップ
+          - PC: 全画面ヒーロー＋動画終了後に blur-[3px] トランジション（人物ぼかし）
+          - tailwind.config.ts: Ver.*/src をスキャン対象追加（クラス生成漏れ修正）
+          - fallback timer 15s（onEnded 未発火対策）
 
 ----------------------------------------------------------------
 【現在のアクティブバージョン】
 ----------------------------------------------------------------
-本番稼働 : Ver.18
-vite.config.ts の root / alias が Ver.18 を参照中
+本番稼働 : Ver.19
+vite.config.ts の root / alias が Ver.19 を参照中
 ビルド出力: dist/public/（heteml FTPアップ対象）
 
 ----------------------------------------------------------------
@@ -167,21 +175,24 @@ neural-design-lab-lp/
 ├── Ver.15/               # 安定版
 ├── Ver.16/               # ヘッドレス構成版
 ├── Ver.17/               # モバイルパフォーマンス版
-├── Ver.18/               # 現在の本番バージョン ★
+├── Ver.18/               # ニューロデザイン定義セクション追加版
+├── Ver.19/               # 現在の本番バージョン ★
+│   ├── public/
+│   │   ├── Opening_mov.mp4   ← オープニング動画
+│   │   ├── Before_mov.webp   ← 動画ポスター画像
+│   │   └── ...その他アセット
 │   └── src/
 │       ├── components/
-│       │   ├── neuro-design-section.tsx  ← Ver.18 新規追加
-│       │   ├── whats-up-section.tsx
-│       │   ├── services-section.tsx
+│       │   ├── neuro-design-section.tsx
 │       │   └── ...その他共通コンポーネント
 │       └── pages/
-│           └── home.tsx
+│           └── home.tsx      ← Hero動画実装
 ├── dist/public/          # ビルド出力（FTPアップ対象）
 ├── .env                  # 実際の環境変数（git管理外）
 ├── .env.example          # キーのテンプレート（git管理内）
 ├── .gitignore
-├── vite.config.ts        # root=Ver.18 / envDir設定込み
-├── tailwind.config.ts
+├── vite.config.ts        # root=Ver.19 / envDir設定込み
+├── tailwind.config.ts    # Ver.*/src スキャン対象追加済み
 ├── start-dev-network.command  # スマホ動作確認用（--host モード）
 ├── package.json
 └── 0.PROJECT_SUMMARY.txt  # このファイル
