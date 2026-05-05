@@ -8,12 +8,12 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      "@": path.resolve(import.meta.dirname, "Ver.18", "src"),
+      "@": path.resolve(import.meta.dirname, "Ver.19", "src"),
       "@shared": path.resolve(import.meta.dirname, "shared"),
       "@assets": path.resolve(import.meta.dirname, "attached_assets"),
     },
   },
-  root: path.resolve(import.meta.dirname, "Ver.18"),
+  root: path.resolve(import.meta.dirname, "Ver.19"),
   envDir: path.resolve(import.meta.dirname),
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
