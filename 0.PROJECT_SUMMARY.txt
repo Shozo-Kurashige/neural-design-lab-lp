@@ -1,7 +1,7 @@
 ================================================================
 Neural Design Lab Official LP — プロジェクトサマリー
 ================================================================
-最終更新: 2026-04-29
+最終更新: 2026-05-19
 担当AI: Claude (セイ)
 補足追記：CEO藏重
 
@@ -149,7 +149,7 @@ Ver.17  モバイルパフォーマンス改善
 Ver.18  ニューロデザイン定義セクション追加
           - 新規: neuro-design-section.tsx
           - ダークグリーンバナーに一行定義を配置（ゴールドアクセント）
-          - 配置: WhatsUpSection → NeuroDesignSection → PHILOSOPHY の順
+          - 配置: WhatsUpSection → NeuroDesignSection → PHILOSOPHY の順（後にVer.19で変更）
           - SEOタグ: #業務改善 #DX #AI活用 #中小企業 #現場設計 #業務フロー
 Ver.19  オープニング動画ヒーロー実装（現在の本番バージョン）★
           - Opening_mov.mp4 を Hero に採用（Before_mov.webp をポスター）
@@ -159,6 +159,15 @@ Ver.19  オープニング動画ヒーロー実装（現在の本番バージョ
           - PC: 全画面ヒーロー＋動画終了後に blur-[3px] トランジション（人物ぼかし）
           - tailwind.config.ts: Ver.*/src をスキャン対象追加（クラス生成漏れ修正）
           - fallback timer 15s（onEnded 未発火対策）
+          [2026-05-19 追加改修]
+          - Philosophyセクション 思想・コンテンツ全面刷新
+            - メインキャッチコピー → 「責任を持つ」「本当のDX」軸に変更
+            - カード①: 「小さく始め、確実に変える」(fa-stairs)
+            - カード②: 「AIは魔法ではない」(fa-puzzle-piece)
+            - カード③: 「現場から逃げない」(fa-hands-helping)
+            - アイコンを Lucide → FontAwesome 6.5.1 に切り替え
+              （Ver.19/index.html に CDN追加）
+          - セクション順序変更: Philosophy → ニューロデザインとは の順に入れ替え
 
 ----------------------------------------------------------------
 【現在のアクティブバージョン】
