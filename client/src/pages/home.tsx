@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Leaf, TrendingUp, Users, Bot } from "lucide-react";
+import { Bot } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ServicesSection } from "@/components/services-section";
 import { Header } from "@/components/header";
@@ -293,10 +293,10 @@ export default function Home() {
               </span>
               <div className="flex justify-center">
                 <FadeIn delay={200}>
-                  <h3 className="text-3xl font-['Noto_Serif_JP'] font-bold">
-                    きれいごとではない、
+                  <h3 className="text-3xl font-['Noto_Serif_JP'] font-bold leading-snug">
+                    「提案」だけではなく、現場に定着するところまで「責任」を持つ。
                     <br />
-                    現場の「解」を。
+                    それが、NDLの考える「本当のDX」です。
                   </h3>
                 </FadeIn>
               </div>
@@ -305,37 +305,40 @@ export default function Home() {
             <div className="grid md:grid-cols-3 gap-12">
               <div className="text-center group cursor-default">
                 <div className="w-16 h-16 mx-auto bg-[#F5F7F6] rounded-full flex items-center justify-center mb-6 group-hover:bg-[#2C3E30] transition-colors duration-500 shadow-sm group-hover:shadow-md">
-                  <TrendingUp className="w-8 h-8 text-[#2C3E30] group-hover:text-white transition-colors duration-500" />
+                  <i className="fas fa-stairs text-2xl text-[#2C3E30] group-hover:text-white transition-colors duration-500" />
                 </div>
                 <h4 className="text-lg font-bold mb-4 font-['Noto_Serif_JP'] text-[#2C3E30] group-hover:text-[#D4AF37] transition-colors duration-300">
-                  小さな変化から始める
+                  小さく始め、確実に変える
                 </h4>
                 <p className="text-sm text-gray-600 leading-relaxed text-justify group-hover:text-[#2C3E30] transition-colors duration-300">
-                  いきなり大きなDX導入は定着しません。今の業務フローを否定せず、無理なく続けられる「半歩先の改善」をご提案します。
+                  大規模な改革よりも、まずは現場で機能する小さな成功を。
+                  無理なく続く改善こそ、本当のDXだと考えています。
                 </p>
               </div>
 
               <div className="text-center group cursor-default">
                 <div className="w-16 h-16 mx-auto bg-[#F5F7F6] rounded-full flex items-center justify-center mb-6 group-hover:bg-[#2C3E30] transition-colors duration-500 shadow-sm group-hover:shadow-md">
-                  <Leaf className="w-8 h-8 text-[#2C3E30] group-hover:text-white transition-colors duration-500" />
+                  <i className="fas fa-puzzle-piece text-2xl text-[#2C3E30] group-hover:text-white transition-colors duration-500" />
                 </div>
                 <h4 className="text-lg font-bold mb-4 font-['Noto_Serif_JP'] text-[#2C3E30] group-hover:text-[#D4AF37] transition-colors duration-300">
-                  地方と中小企業への想い
+                  AIは魔法ではない
                 </h4>
                 <p className="text-sm text-gray-600 leading-relaxed text-justify group-hover:text-[#2C3E30] transition-colors duration-300">
-                  ニッポンを支えているのは、華やかなIT企業ではなく、中小企業と地方の現場です。そこに最新の武器を提供し、共に戦うことが私の使命です。
+                  生成AIは現場を理解し、構造化し、運用設計して初めて力を発揮します。
+                  私たちは「導入」だけに終わらず、「現場が自然に使い続ける状態」を設計します。
                 </p>
               </div>
 
               <div className="text-center group cursor-default">
                 <div className="w-16 h-16 mx-auto bg-[#F5F7F6] rounded-full flex items-center justify-center mb-6 group-hover:bg-[#2C3E30] transition-colors duration-500 shadow-sm group-hover:shadow-md">
-                  <Users className="w-8 h-8 text-[#2C3E30] group-hover:text-white transition-colors duration-500" />
+                  <i className="fas fa-hands-helping text-2xl text-[#2C3E30] group-hover:text-white transition-colors duration-500" />
                 </div>
                 <h4 className="text-lg font-bold mb-4 font-['Noto_Serif_JP'] text-[#2C3E30] group-hover:text-[#D4AF37] transition-colors duration-300">
-                  非エリートの強み
+                  現場から逃げない
                 </h4>
                 <p className="text-sm text-gray-600 leading-relaxed text-justify group-hover:text-[#2C3E30] transition-colors duration-300">
-                  私はエリートではありません。だからこそ、現場の「痛み」や「言い出しにくい悩み」が分かります。上からではなく、横に立つ伴走者でありたいと考えます。
+                  私たちは、提案だけで終わるDXは行いません。
+                  現場に入り、運用が定着し、"仕組みが回る"まで伴走します。
                 </p>
               </div>
             </div>
