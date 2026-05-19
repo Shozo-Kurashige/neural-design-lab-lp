@@ -291,9 +291,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Ver.18: ニューロデザイン定義セクション */}
-        <NeuroDesignSection />
-
         <section id="philosophy" className="py-24 bg-white">
           <div className="container mx-auto px-6 max-w-5xl">
             <div className="text-center mb-20">
@@ -353,6 +350,9 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        {/* Ver.18: ニューロデザイン定義セクション */}
+        <NeuroDesignSection />
 
         <WhatsUpSection />
 
