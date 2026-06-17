@@ -73,3 +73,6 @@ Desktop.ini
 # ------------------------------
 .vite/
 vite.config.*.timestamp-*
+
+# セキュリティインシデント記録（ローカル管理のみ・Git管理外）
+SECURITY_INCIDENT*.md
