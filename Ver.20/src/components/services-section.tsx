@@ -8,6 +8,7 @@ import {
   Smartphone,
   CheckCircle2,
   MessageCircleHeart,
+  Sparkles,
 } from "lucide-react";
 import { FadeIn } from "@/components/fade-in";
 
@@ -16,7 +17,7 @@ const services = [
     icon: <LineChart className="w-8 h-8" />,
     title: "業務改善コンサルティング",
     description:
-      "「何から始めればいいか分からない」という状態から、現場の課題を整理し、最適なデジタル活用ロードマップを描きます。",
+      "「何から始めればいいか分からない」という状態から、現場の課題を整理し、無理なく回る業務の形を設計します。",
     features: [
       "現状分析・課題抽出",
       "DXロードマップ策定",
@@ -29,20 +30,20 @@ const services = [
     icon: <Bot className="w-8 h-8" />,
     title: "生成AI導入・活用支援",
     description:
-      "ChatGPTなどの生成AIを実務に組み込み、議事録作成、メール対応、資料作成などの事務作業を劇的に効率化します。",
+      "ChatGPTなどの生成AIを実務に組み込み、議事録作成、メール対応、資料作成などの事務作業を効率化します。",
     features: [
       "社内AIチャットボット開発",
       "業務自動化スクリプト作成",
       "社内研修・ワークショップ",
     ],
     secretMessage:
-      '難しい技術の話は後回し。まず"どこが面倒か"を聴かせてください。',
+      '難しい技術の話は後回し。まず"どこが面倒で、どこが危ないか"を聴かせてください。',
   },
   {
     icon: <Code2 className="w-8 h-8" />,
     title: "Web制作・システム開発",
     description:
-      "デザインの美しさだけでなく、更新のしやすさやセキュリティを重視した、「稼働し続ける」Webサイトやシステムを構築します。",
+      "デザインの美しさだけでなく、更新しやすさやセキュリティを重視した、「稼働し続ける」Webサイトやシステムを構築します。",
     features: [
       "コーポレートサイト制作",
       "業務システム開発",
@@ -55,7 +56,7 @@ const services = [
     icon: <Smartphone className="w-8 h-8" />,
     title: "SNS運用・コンテンツ制作",
     description:
-      "「バズる」ことよりも「信頼を積み重ねる」ことを重視。企業の想いや技術力を、適切な言葉とデザインで発信し、ファンを育てます。",
+      "「バズる」ことよりも「信頼を積み重ねる」ことを重視。企業の想いや技術を、適切な言葉とデザインで発信します。",
     features: [
       "Instagram/X/LINE運用代行",
       "ショート動画制作・編集",
@@ -66,8 +67,28 @@ const services = [
   },
 ];
 
+const llmoService = {
+  icon: <Sparkles className="w-8 h-8" />,
+  title: "AI検索・LLMO対策支援",
+  description:
+    "AI検索で見つけられるために、まず自社の歴史・強み・こだわり・現場の一次情報を整理します。難しいSEO用語や技術対策の前に、“自社にしか書けない言葉”を掘り起こし、AIにも人にも伝わる情報発信の土台を整えます。",
+  featuresLeft: [
+    "自社の強み・一次情報の棚卸し",
+    "LLMO/AEO向けコンテンツ設計",
+  ],
+  featuresRight: [
+    "ブログ・FAQ・サービスページ改善",
+    "AIに伝わる定義文・導線設計",
+  ],
+  secretMessage:
+    "AI検索対策を入口に、現場の一次情報と業務課題を掘り起こします。",
+  footerBanner:
+    "AI検索対策を入り口に、現場の一次情報と業務課題を掘り起こす支援です。",
+};
+
 export function ServicesSection() {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [llmoActive, setLlmoActive] = useState(false);
 
   const toggleCard = (index: number) => {
     setActiveIndex(activeIndex === index ? null : index);
@@ -85,13 +106,14 @@ export function ServicesSection() {
               提供サービス
             </h2>
             <p className="mt-6 text-gray-600 max-w-2xl mx-auto">
-              コンサルティングから開発、そして日々の情報発信まで。
+              コンサルティングからAI活用、Web制作、日々の情報発信まで。
               <br className="hidden md:block" />
-              ワンストップで伴走できるのが、私たちの強みです。
+              現場が無理なく動き続けるための仕組みを、伴走して整えます。
             </p>
           </FadeIn>
         </div>
 
+        {/* 既存4カード：2×2グリッド */}
         <div className="grid md:grid-cols-2 gap-8 md:gap-12">
           {services.map((service, index) => {
             const isActive = activeIndex === index;
@@ -159,6 +181,89 @@ export function ServicesSection() {
             );
           })}
         </div>
+
+        {/* LLMOカード：全幅 */}
+        <FadeIn delay={400}>
+          <div
+            onClick={() => setLlmoActive(!llmoActive)}
+            className={`mt-8 md:mt-12 bg-white rounded-sm border transition-all duration-300 group cursor-pointer overflow-hidden ${
+              llmoActive
+                ? "shadow-xl border-[#D4AF37]/50"
+                : "border-gray-100 shadow-sm hover:shadow-lg"
+            }`}
+          >
+            <div className="p-8 md:p-10">
+              <div className="mb-6 inline-flex p-4 bg-[#F5F7F6] rounded-full text-[#2C3E30] group-hover:bg-[#2C3E30] group-hover:text-[#D4AF37] transition-colors duration-300">
+                {llmoService.icon}
+              </div>
+
+              <h3 className="text-xl md:text-2xl font-['Noto_Serif_JP'] font-bold text-[#2C3E30] mb-4 group-hover:text-[#D4AF37] transition-colors">
+                {llmoService.title}
+              </h3>
+
+              <p className="text-gray-600 leading-relaxed mb-8 max-w-3xl">
+                {llmoService.description}
+              </p>
+
+              {/* 箇条書き 2列 */}
+              <div className="grid md:grid-cols-2 gap-x-12 gap-y-3">
+                <ul className="space-y-3">
+                  {llmoService.featuresLeft.map((feature, i) => (
+                    <li
+                      key={i}
+                      className="flex items-start gap-3 text-sm text-gray-600"
+                    >
+                      <CheckCircle2 className="w-5 h-5 text-[#D4AF37] shrink-0" />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+                <ul className="space-y-3">
+                  {llmoService.featuresRight.map((feature, i) => (
+                    <li
+                      key={i}
+                      className="flex items-start gap-3 text-sm text-gray-600"
+                    >
+                      <CheckCircle2 className="w-5 h-5 text-[#D4AF37] shrink-0" />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="mt-6 text-right">
+                <span
+                  className={`text-xs font-bold tracking-wider transition-opacity duration-300 ${llmoActive ? "text-[#D4AF37] opacity-100" : "text-gray-400 opacity-0 group-hover:opacity-100"}`}
+                >
+                  {llmoActive ? "CLOSE" : "TAP TO READ"}
+                </span>
+              </div>
+            </div>
+
+            {/* アコーディオン：secretMessage */}
+            <div
+              className={`grid transition-all duration-500 ease-in-out bg-[#2C3E30] ${
+                llmoActive ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+              }`}
+            >
+              <div className="overflow-hidden">
+                <div className="p-6 md:px-10 md:py-8 flex items-start gap-4">
+                  <MessageCircleHeart className="w-6 h-6 text-[#D4AF37] shrink-0 mt-1" />
+                  <p className="text-white font-['Noto_Serif_JP'] leading-relaxed text-[15px] tracking-wide">
+                    {llmoService.secretMessage}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* 常時表示の締め文帯 */}
+            <div className="bg-[#2C3E30] px-8 md:px-10 py-5">
+              <p className="text-white font-['Noto_Serif_JP'] text-sm md:text-base leading-relaxed tracking-wide text-center">
+                {llmoService.footerBanner}
+              </p>
+            </div>
+          </div>
+        </FadeIn>
       </div>
     </section>
   );

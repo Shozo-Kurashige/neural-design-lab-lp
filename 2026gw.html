@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ゴールデンウィーク休業のお知らせ｜Neural Design Lab</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'Noto Sans JP', 'Meiryo', sans-serif;
+    background: #F7F8FA;
+    color: #1A1A2E;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 16px;
+  }
+
+  .card {
+    background: #fff;
+    max-width: 680px;
+    width: 100%;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 32px rgba(0,0,0,0.10);
+  }
+
+  /* Header */
+  .header {
+    background: #1A1A2E;
+    padding: 32px 36px 28px;
+    border-left: 6px solid #4A90D9;
+  }
+  .header .label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: #4A90D9;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.4;
+  }
+  .header .sub {
+    margin-top: 6px;
+    font-size: 12px;
+    color: #8899AA;
+  }
+
+  /* Body */
+  .body { padding: 32px 36px 36px; }
+
+  .greeting {
+    font-size: 13.5px;
+    line-height: 2;
+    color: #444;
+    margin-bottom: 24px;
+  }
+
+  /* Period Banner */
+  .period-banner {
+    background: #4A90D9;
+    border-radius: 10px;
+    padding: 16px 24px;
+    text-align: center;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 28px;
+    letter-spacing: 0.5px;
+  }
+
+  /* Section title */
+  .section-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1A1A2E;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-title::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 16px;
+    background: #4A90D9;
+    border-radius: 2px;
+  }
+
+  /* Calendar */
+  .calendar {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 16px;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .calendar thead th {
+    background: #1A1A2E;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 10px 0;
+    text-align: center;
+    width: calc(100% / 7);
+  }
+  .calendar thead th.sun { color: #FF8080; }
+  .calendar thead th.sat { color: #80B8FF; }
+
+  .calendar tbody td {
+    border: 1px solid #EAEDF0;
+    text-align: center;
+    vertical-align: middle;
+    padding: 10px 4px 8px;
+    font-size: 13px;
+    background: #fff;
+  }
+  .calendar tbody td.open   { background: #F5FDF8; }
+  .calendar tbody td.closed { background: #FEF4F4; }
+  .calendar tbody td.holiday{ background: #FFF8F0; }
+
+  .cell-date {
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .cell-date.red  { color: #D94040; }
+  .cell-date.blue { color: #4A90D9; }
+  .cell-date.dark { color: #1A1A2E; }
+
+  .cell-holiday-name {
+    font-size: 9px;
+    color: #E67E22;
+    margin: 2px 0;
+    line-height: 1.3;
+    min-height: 12px;
+  }
+
+  .badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 20px;
+    margin-top: 4px;
+  }
+  .badge.open    { background: #E8F8EF; color: #27AE60; }
+  .badge.closed  { background: #FDECEA; color: #C0392B; }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+    font-size: 11.5px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .legend-dot {
+    width: 12px; height: 12px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+  .dot-open    { background: #E8F8EF; border: 1px solid #27AE60; }
+  .dot-closed  { background: #FDECEA; border: 1px solid #C0392B; }
+  .dot-holiday { background: #FFF8F0; border: 1px solid #E67E22; }
+
+  /* Contact Box */
+  .contact-box {
+    background: #EAF2FB;
+    border-left: 4px solid #4A90D9;
+    border-radius: 0 10px 10px 0;
+    padding: 18px 22px;
+    margin-bottom: 22px;
+    font-size: 13.5px;
+    line-height: 1.9;
+    color: #1A1A2E;
+  }
+  .contact-box a {
+    color: #4A90D9;
+    font-weight: 700;
+    text-decoration: none;
+    border-bottom: 1.5px solid #4A90D9;
+  }
+  .contact-box a:hover { opacity: 0.75; }
+
+  /* Resume notice */
+  .resume-notice {
+    text-align: center;
+    font-size: 13px;
+    color: #555;
+    background: #F7F8FA;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 0;
+  }
+  .resume-notice strong { color: #27AE60; }
+
+  /* Footer */
+  .footer {
+    background: #1A1A2E;
+    padding: 18px 36px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 3px solid #4A90D9;
+  }
+  .footer-logo {
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .footer-email {
+    font-size: 11px;
+    color: #8899AA;
+  }
+  .footer-email a {
+    color: #4A90D9;
+    text-decoration: none;
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="label">Notice</div>
+    <h1>ゴールデンウィーク<br>休業のお知らせ</h1>
+    <div class="sub">Neural Design Lab（NDL）</div>
+  </div>
+
+  <!-- Body -->
+  <div class="body">
+
+    <p class="greeting">
+      平素より格別のお引き立てを賜り、誠にありがとうございます。<br>
+      下記の期間、ゴールデンウィーク休業とさせていただきます。<br>
+      ご不便をおかけいたしますが、何卒ご了承ください。
+    </p>
+
+    <!-- Period Banner -->
+    <div class="period-banner">
+      休業期間：2026年 4月26日（日）〜 5月9日（土）
+    </div>
+
+    <!-- Calendar -->
+    <div class="section-title">期間中カレンダー</div>
+
+    <table class="calendar">
+      <thead>
+        <tr>
+          <th class="sun">日</th>
+          <th>月</th>
+          <th>火</th>
+          <th>水</th>
+          <th>木</th>
+          <th>金</th>
+          <th class="sat">土</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Row 1: Apr 26–May 2 -->
+        <tr>
+          <td class="closed">
+            <div class="cell-date red">4/26</div>
+            <div class="cell-holiday-name"></div>
+            <span class="badge closed">休業</span>
+          </td>
+          <td class="open">
+            <div class="cell-date dark">4/27</div>
+            <div class="cell-holiday-name"></div>
+            <span class="badge open">営業</span>
+          </td>
+          <td class="open">
+            <div class="cell-date dark">4/28</div>
+            <div class="cell-holiday-name"></div>
+            <span class="badge open">営業</span>
+          </td>
+          <td class="holiday">
+            <div class="cell-date red">4/29</div>
+            <div class="cell-holiday-name">昭和の日</div>
+            <span class="badge closed">休業</span>
+          </td>
+          <td class="open">
+            <div class="cell-date dark">4/30</div>
+            <div class="cell-holiday-name"></div>
+            <span class="badge open">営業</span>
+          </td>
+          <td class="open">
+            <div class="cell-date dark">5/1</div>
+            <div class="cell-holiday-name"></div>
+            <span class="badge open">営業</span>
+          </td>
+          <td class="closed">
+            <div class="cell-date blue">5/2</div>
+            <div class="cell-holiday-name"></div>
+            <span class="badge closed">休業</span>
+          </td>
+        </tr>
+        <!-- Row 2: May 3–9 -->
+        <tr>
+          <td class="holiday">
+            <div class="cell-date red">5/3</div>
+            <div class="cell-holiday-name">憲法記念日</div>
+            <span class="badge closed">休業</span>
+          </td>
+          <td class="holiday">
+            <div class="cell-date red">5/4</div>
+            <div class="cell-holiday-name">みどりの日</div>
+            <span class="badge closed">休業</span>
+          </td>
+          <td class="holiday">
+            <div class="cell-date red">5/5</div>
+            <div class="cell-holiday-name">こどもの日</div>
+            <span class="badge closed">休業</span>
+          </td>
+          <td class="holiday">
+            <div class="cell-date red">5/6</div>
+            <div class="cell-holiday-name">振替休日</div>
+            <span class="badge closed">休業</span>
+          </td>
+          <td class="open">
+            <div class="cell-date dark">5/7</div>
+            <div class="cell-holiday-name"></div>
+            <span class="badge open">営業</span>
+          </td>
+          <td class="open">
+            <div class="cell-date dark">5/8</div>
+            <div class="cell-holiday-name"></div>
+            <span class="badge open">営業</span>
+          </td>
+          <td class="closed">
+            <div class="cell-date blue">5/9</div>
+            <div class="cell-holiday-name"></div>
+            <span class="badge closed">休業</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Legend -->
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot dot-open"></div>通常営業</div>
+      <div class="legend-item"><div class="legend-dot dot-closed"></div>休業（土・日）</div>
+      <div class="legend-item"><div class="legend-dot dot-holiday"></div>休業（祝日・振替）</div>
+    </div>
+
+    <!-- Contact Box -->
+    <div class="contact-box">
+      急ぎのご用件につきましては代表メール（<a href="mailto:info@neuraldesignlab.jp">info@neuraldesignlab.jp</a>）へ直接ご連絡ください。
+    </div>
+
+    <!-- Resume Notice -->
+    <div class="resume-notice">
+      業務再開：<strong>2026年5月11日（月）</strong>より通常営業いたします。
+    </div>
+
+  </div><!-- /body -->
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-logo">Neural Design Lab</div>
+    <div class="footer-email">
+      <a href="mailto:info@neuraldesignlab.jp">info@neuraldesignlab.jp</a>
+    </div>
+  </div>
+
+</div><!-- /card -->
+
+</body>
+</html>
