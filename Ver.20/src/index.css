@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-[#FDFBF7] text-[#2C3E30];
+  }
+
+  a {
+    @apply text-current;
+  }
+}
