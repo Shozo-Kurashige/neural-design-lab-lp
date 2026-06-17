@@ -82,13 +82,12 @@ const llmoService = {
   ],
   secretMessage:
     "AI検索対策を入口に、現場の一次情報と業務課題を掘り起こします。",
-  footerBanner:
-    "AI検索対策を入り口に、現場の一次情報と業務課題を掘り起こす支援です。",
 };
+
+const LLMO_INDEX = services.length; // 4
 
 export function ServicesSection() {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  const [llmoActive, setLlmoActive] = useState(false);
 
   const toggleCard = (index: number) => {
     setActiveIndex(activeIndex === index ? null : index);
@@ -185,9 +184,9 @@ export function ServicesSection() {
         {/* LLMOカード：全幅 */}
         <FadeIn delay={400}>
           <div
-            onClick={() => setLlmoActive(!llmoActive)}
+            onClick={() => toggleCard(LLMO_INDEX)}
             className={`mt-8 md:mt-12 bg-white rounded-sm border transition-all duration-300 group cursor-pointer overflow-hidden ${
-              llmoActive
+              activeIndex === LLMO_INDEX
                 ? "shadow-xl border-[#D4AF37]/50"
                 : "border-gray-100 shadow-sm hover:shadow-lg"
             }`}
@@ -233,9 +232,9 @@ export function ServicesSection() {
 
               <div className="mt-6 text-right">
                 <span
-                  className={`text-xs font-bold tracking-wider transition-opacity duration-300 ${llmoActive ? "text-[#D4AF37] opacity-100" : "text-gray-400 opacity-0 group-hover:opacity-100"}`}
+                  className={`text-xs font-bold tracking-wider transition-opacity duration-300 ${activeIndex === LLMO_INDEX ? "text-[#D4AF37] opacity-100" : "text-gray-400 opacity-0 group-hover:opacity-100"}`}
                 >
-                  {llmoActive ? "CLOSE" : "TAP TO READ"}
+                  {activeIndex === LLMO_INDEX ? "CLOSE" : "TAP TO READ"}
                 </span>
               </div>
             </div>
@@ -243,7 +242,7 @@ export function ServicesSection() {
             {/* アコーディオン：secretMessage */}
             <div
               className={`grid transition-all duration-500 ease-in-out bg-[#2C3E30] ${
-                llmoActive ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+                activeIndex === LLMO_INDEX ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
               }`}
             >
               <div className="overflow-hidden">
@@ -254,13 +253,6 @@ export function ServicesSection() {
                   </p>
                 </div>
               </div>
-            </div>
-
-            {/* 常時表示の締め文帯 */}
-            <div className="bg-[#2C3E30] px-8 md:px-10 py-5">
-              <p className="text-white font-['Noto_Serif_JP'] text-sm md:text-base leading-relaxed tracking-wide text-center">
-                {llmoService.footerBanner}
-              </p>
             </div>
           </div>
         </FadeIn>

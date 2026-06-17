@@ -20,6 +20,7 @@ type ConsultationItem = {
   href: string;
   orderClass: string;
   isHighlight?: boolean;
+  isLLMO?: boolean;
 };
 
 export default function Home() {
@@ -118,35 +119,41 @@ export default function Home() {
 
   const consultationItems: ConsultationItem[] = [
     {
-      text: "WEBページや\nSNS運用",
+      text: "WEBページやSNS運用",
       href: "#services",
-      orderClass: "order-1 md:order-1",
+      orderClass: "order-1",
     },
     {
-      text: "AIによる\n無料経営診断",
+      text: "AI活用やDXツール導入",
+      href: "#services",
+      orderClass: "order-2",
+    },
+    {
+      text: "補助金や経営相談",
+      href: "#services",
+      orderClass: "order-3",
+    },
+    {
+      text: "AIによる無料経営相談（おすすめ）",
       href: "#diagnostic-banner",
-      orderClass: "order-2 md:order-5",
+      orderClass: "order-4",
       isHighlight: true,
     },
     {
-      text: "AI活用や\nDXツール導入",
+      text: "AI検索・LLMO対策支援（New!）",
       href: "#services",
-      orderClass: "order-3 md:order-2",
+      orderClass: "order-5",
+      isLLMO: true,
     },
     {
-      text: "補助金や\n経営相談",
-      href: "#services",
-      orderClass: "order-4 md:order-3",
-    },
-    {
-      text: "課題が明確でなく\n何から始めていいか\nわからない",
+      text: "課題が明確ではなく何から始めていいかわからない",
       href: "#process",
-      orderClass: "order-5 md:order-4",
+      orderClass: "order-6",
     },
     {
-      text: "コンサルに相談したいが\n価格が高くて使えない",
+      text: "コンサルに相談したいが高くて使えない",
       href: "#price",
-      orderClass: "order-6 md:order-6",
+      orderClass: "order-7",
     },
   ];
 
@@ -198,39 +205,36 @@ export default function Home() {
           </AnimatePresence>
         </div>
 
-        {/* ▼ スマホ専用: 相談ボタン群（動画終了後にフェードイン） */}
+        {/* ▼ スマホ専用: 相談リスト（動画終了後にスライドイン） */}
         <AnimatePresence>
           {mobileVideoEnded && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, ease: "easeOut" }}
-              className="md:hidden bg-[#2C3E30] px-4 py-8 flex flex-col items-center"
-            >
-              <div className="flex flex-wrap justify-center gap-4 max-w-[360px]">
-                {consultationItems.map((item, index) => (
+            <div className="md:hidden bg-[#2C3E30] px-3 py-3 flex flex-col gap-2">
+              {consultationItems.map((item, index) => {
+                const fromRight = index % 2 === 0;
+                return (
                   <motion.a
                     key={index}
                     href={item.href}
-                    initial={{ opacity: 0, y: 16, backgroundColor: item.isHighlight ? "rgba(212,175,55,1)" : "rgba(255,255,255,0.9)" }}
-                    animate={{ opacity: 1, y: 0, backgroundColor: item.isHighlight ? "rgba(212,175,55,1)" : "rgba(255,255,255,0.9)" }}
-                    transition={{ duration: 0.6, delay: index * 0.08, ease: "easeOut" }}
-                    whileHover={item.isHighlight ? { scale: 1.05 } : { scale: 1.05, backgroundColor: "rgba(255,255,255,1)" }}
+                    initial={{ opacity: 0, x: fromRight ? 80 : -80 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.45, delay: index * 0.12, ease: "easeOut" }}
                     style={{ willChange: "transform, opacity" }}
-                    className={`w-32 h-32 rounded-full border flex flex-col items-center justify-center p-3 text-center cursor-pointer group
-                      ${item.orderClass} ${item.isHighlight
-                        ? "border-[#D4AF37]/70 text-white"
-                        : "border-gray-300 text-gray-800"
+                    className={`flex items-center justify-between w-full px-4 py-3.5 cursor-pointer group
+                      ${item.isHighlight
+                        ? "bg-[#D4AF37] text-white"
+                        : item.isLLMO
+                        ? "bg-[#2C3E30] border border-white/40 text-white"
+                        : "bg-white/85 text-gray-800"
                       }`}
                   >
-                    {item.isHighlight && <Bot size={18} className="mb-1 text-white opacity-90" />}
-                    <span className={`text-xs font-bold leading-relaxed whitespace-pre-wrap ${item.isHighlight ? "text-white" : "group-hover:text-[#D4AF37]"}`}>
+                    <span className={`text-sm font-bold leading-relaxed ${!item.isHighlight && !item.isLLMO ? "group-hover:text-[#D4AF37]" : ""}`}>
                       {item.text}
                     </span>
+                    <span className="font-bold ml-3 shrink-0 text-sm">{">>"}</span>
                   </motion.a>
-                ))}
-              </div>
-            </motion.div>
+                );
+              })}
+            </div>
           )}
         </AnimatePresence>
 
@@ -262,31 +266,33 @@ export default function Home() {
                 </h2>
               </div>
             </motion.div>
-            <div className="flex flex-wrap justify-center gap-8 max-w-[800px]">
-              {consultationItems.map((item, index) => (
-                <motion.a
-                  key={index}
-                  href={item.href}
-                  initial={{ opacity: 0, y: 20, backgroundColor: item.isHighlight ? "rgba(212,175,55,1)" : "rgba(255,255,255,0.9)" }}
-                  animate={{ opacity: 1, y: 0, backgroundColor: item.isHighlight ? "rgba(212,175,55,1)" : "rgba(255,255,255,0.9)" }}
-                  transition={{ duration: 0.8, delay: 7.2 + index * 0.1, ease: "easeOut" }}
-                  whileHover={item.isHighlight
-                    ? { scale: 1.05, backgroundColor: "rgba(212,175,55,0.85)", boxShadow: "0 0 30px rgba(212,175,55,0.55)" }
-                    : { scale: 1.05, backgroundColor: "rgba(255,255,255,1)", boxShadow: "0 0 20px rgba(212,175,55,0.20)" }
-                  }
-                  style={{ willChange: "transform, opacity" }}
-                  className={`w-48 h-48 rounded-full border flex flex-col items-center justify-center p-4 text-center cursor-pointer group
-                    ${item.orderClass} ${item.isHighlight
-                      ? "border-[#D4AF37]/70 text-white shadow-[0_0_20px_rgba(212,175,55,0.30)]"
-                      : "border-gray-300 text-gray-800 shadow-sm"
-                    }`}
-                >
-                  {item.isHighlight && <Bot size={20} className="mb-1 text-white opacity-90 group-hover:scale-110 transition-transform" />}
-                  <span className={`text-sm font-bold leading-relaxed whitespace-pre-wrap transition-colors ${item.isHighlight ? "text-white group-hover:text-white" : "group-hover:text-[#D4AF37]"}`}>
-                    {item.text}
-                  </span>
-                </motion.a>
-              ))}
+            <div className="flex flex-col gap-2 w-full max-w-xl">
+              {consultationItems.map((item, index) => {
+                const fromRight = index % 2 === 0;
+                return (
+                  <motion.a
+                    key={index}
+                    href={item.href}
+                    initial={{ opacity: 0, x: fromRight ? 80 : -80 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5, delay: 7.2 + index * 0.12, ease: "easeOut" }}
+                    whileHover={{ x: 4 }}
+                    style={{ willChange: "transform, opacity" }}
+                    className={`flex items-center justify-between w-full px-6 py-4 cursor-pointer group
+                      ${item.isHighlight
+                        ? "bg-[#D4AF37] text-white"
+                        : item.isLLMO
+                        ? "bg-[#2C3E30] border border-white/40 text-white"
+                        : "bg-white/85 text-gray-800 hover:bg-white/95"
+                      }`}
+                  >
+                    <span className={`font-bold leading-relaxed transition-colors ${!item.isHighlight && !item.isLLMO ? "group-hover:text-[#D4AF37]" : ""}`}>
+                      {item.text}
+                    </span>
+                    <span className="font-bold ml-6 shrink-0 transition-transform group-hover:translate-x-1">{">>"}</span>
+                  </motion.a>
+                );
+              })}
             </div>
           </div>
         </section>

@@ -154,6 +154,12 @@ export function Footer({ simple = false }: { simple?: boolean }) {
             >
               プライバシーポリシー
             </a>
+            <a
+              href="/ai-governance"
+              className="hover:text-[#D4AF37] transition-colors"
+            >
+              AIガバナンス方針
+            </a>
           </div>
         </div>
       </div>
