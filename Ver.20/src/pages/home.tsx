@@ -223,8 +223,8 @@ export default function Home() {
                       ${item.isHighlight
                         ? "bg-[#D4AF37] text-white"
                         : item.isLLMO
-                        ? "bg-[#2C3E30] border border-white/40 text-white"
-                        : "bg-white/85 text-gray-800"
+                          ? "bg-[#2C3E30] border border-white/40 text-white"
+                          : "bg-white/85 text-gray-800"
                       }`}
                   >
                     <span className={`text-sm font-bold leading-relaxed ${!item.isHighlight && !item.isLLMO ? "group-hover:text-[#D4AF37]" : ""}`}>
@@ -255,7 +255,7 @@ export default function Home() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.2, delay: 6.8, ease: "easeOut" }}
+              transition={{ duration: 1.2, delay: 9.8, ease: "easeOut" }}
               className="text-center mb-16 flex justify-center w-full"
             >
               <div className="inline-block px-12 py-8 rounded-2xl bg-white/20 backdrop-blur-lg border border-white/30 shadow-[0_8px_32px_rgba(0,0,0,0.1)]">
@@ -275,15 +275,15 @@ export default function Home() {
                     href={item.href}
                     initial={{ opacity: 0, x: fromRight ? 80 : -80 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.5, delay: 7.2 + index * 0.12, ease: "easeOut" }}
+                    transition={{ duration: 0.5, delay: 10.3 + index * 0.12, ease: "easeOut" }}
                     whileHover={{ x: 4 }}
                     style={{ willChange: "transform, opacity" }}
                     className={`flex items-center justify-between w-full px-6 py-4 cursor-pointer group
                       ${item.isHighlight
                         ? "bg-[#D4AF37] text-white"
                         : item.isLLMO
-                        ? "bg-[#2C3E30] border border-white/40 text-white"
-                        : "bg-white/85 text-gray-800 hover:bg-white/95"
+                          ? "bg-[#2C3E30] border border-white/40 text-white"
+                          : "bg-white/85 text-gray-800 hover:bg-white/95"
                       }`}
                   >
                     <span className={`font-bold leading-relaxed transition-colors ${!item.isHighlight && !item.isLLMO ? "group-hover:text-[#D4AF37]" : ""}`}>
