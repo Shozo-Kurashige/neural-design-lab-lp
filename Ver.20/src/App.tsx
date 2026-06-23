@@ -6,6 +6,7 @@ import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
 import Privacy from "@/pages/privacy";
 import AiGovernance from "@/pages/ai-governance";
+import AiSearchLlmo from "@/pages/ai-search-llmo";
 import Blog from "@/pages/Blog";
 import BlogPost from "@/pages/BlogPost";
 
@@ -15,6 +16,7 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/privacy" component={Privacy} />
       <Route path="/ai-governance" component={AiGovernance} />
+      <Route path="/ai-search-llmo" component={AiSearchLlmo} />
       <Route path="/blog" component={Blog} />
       <Route path="/blog/:slug" component={BlogPost} />
       <Route component={NotFound} />

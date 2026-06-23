@@ -86,6 +86,31 @@ export default function Home() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // 他ページから /#anchor で遷移してきた場合のスクロール対応
+  // （ブラウザの初期ロード時アンカー処理はReactのレンダリング前に走るため効かない）
+  // 画像・動画の遅延読み込みでレイアウトが後からズレるため、複数回補正する
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (!hash || hash === "#") return;
+
+    const scrollToHash = () => {
+      const targetElement = document.querySelector(hash);
+      if (!targetElement) return;
+      const targetPosition =
+        targetElement.getBoundingClientRect().top + window.scrollY;
+      const headerOffset = 80;
+      window.scrollTo({
+        top: targetPosition - headerOffset,
+        behavior: "smooth",
+      });
+    };
+
+    const timers = [200, 600, 1200, 2000].map((delay) =>
+      setTimeout(scrollToHash, delay),
+    );
+    return () => timers.forEach(clearTimeout);
+  }, []);
+
   useEffect(() => {
     const handleLinkClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
@@ -141,7 +166,7 @@ export default function Home() {
     },
     {
       text: "AI検索・LLMO対策支援（New!）",
-      href: "#services",
+      href: "/ai-search-llmo",
       orderClass: "order-5",
       isLLMO: true,
     },
@@ -227,10 +252,10 @@ export default function Home() {
                           : "bg-white/85 text-gray-800"
                       }`}
                   >
-                    <span className={`text-sm font-bold leading-relaxed ${!item.isHighlight && !item.isLLMO ? "group-hover:text-[#D4AF37]" : ""}`}>
+                    <span className={`text-sm font-bold leading-relaxed ${item.isLLMO ? "text-[#D4AF37]" : !item.isHighlight ? "group-hover:text-[#D4AF37]" : ""}`}>
                       {item.text}
                     </span>
-                    <span className="font-bold ml-3 shrink-0 text-sm">{">>"}</span>
+                    <span className={`font-bold ml-3 shrink-0 text-sm ${item.isLLMO ? "text-[#D4AF37]" : ""}`}>{">>"}</span>
                   </motion.a>
                 );
               })}
@@ -286,10 +311,10 @@ export default function Home() {
                           : "bg-white/85 text-gray-800 hover:bg-white/95"
                       }`}
                   >
-                    <span className={`font-bold leading-relaxed transition-colors ${!item.isHighlight && !item.isLLMO ? "group-hover:text-[#D4AF37]" : ""}`}>
+                    <span className={`font-bold leading-relaxed transition-colors ${item.isLLMO ? "text-[#D4AF37]" : !item.isHighlight ? "group-hover:text-[#D4AF37]" : ""}`}>
                       {item.text}
                     </span>
-                    <span className="font-bold ml-6 shrink-0 transition-transform group-hover:translate-x-1">{">>"}</span>
+                    <span className={`font-bold ml-6 shrink-0 transition-transform group-hover:translate-x-1 ${item.isLLMO ? "text-[#D4AF37]" : ""}`}>{">>"}</span>
                   </motion.a>
                 );
               })}

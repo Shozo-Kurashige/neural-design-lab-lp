@@ -8,8 +8,8 @@ const skillCategories = [
     icon: <Cpu className="w-6 h-6 text-[#D4AF37]" />,
     description: "用途に合わせて最適な頭脳（AIモデル）を選定・活用します。",
     skills: [
-      "OpenAI API (GPT-4o)",
-      "Anthropic (Claude 4.6)",
+      "OpenAI API (GPT)",
+      "Anthropic (Claude)",
       "Google Gemini",
       "Microsoft Copilot",
       "Adobe Express / ImageFX",

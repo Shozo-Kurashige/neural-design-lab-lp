@@ -248,9 +248,18 @@ export function ServicesSection() {
               <div className="overflow-hidden">
                 <div className="p-6 md:px-10 md:py-8 flex items-start gap-4">
                   <MessageCircleHeart className="w-6 h-6 text-[#D4AF37] shrink-0 mt-1" />
-                  <p className="text-white font-['Noto_Serif_JP'] leading-relaxed text-[15px] tracking-wide">
-                    {llmoService.secretMessage}
-                  </p>
+                  <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                    <p className="text-white font-['Noto_Serif_JP'] leading-relaxed text-[15px] tracking-wide">
+                      {llmoService.secretMessage}
+                    </p>
+                    <a
+                      href="/ai-search-llmo"
+                      onClick={(e) => e.stopPropagation()}
+                      className="text-[#D4AF37] text-sm font-bold underline underline-offset-2 hover:text-[#e8c25f] transition-colors shrink-0"
+                    >
+                      詳細はこちら
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
