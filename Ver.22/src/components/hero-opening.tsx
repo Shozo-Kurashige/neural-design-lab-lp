@@ -100,7 +100,7 @@ export function HeroOpening() {
   });
 
   return (
-    <div ref={heroRef} className="relative w-full">
+    <div ref={heroRef} className="relative w-full z-20">
 
       {/* 背景画像（② willChange: transform で常時 GPU レイヤー確保） */}
       <div
