@@ -8,6 +8,7 @@ import Privacy from "@/pages/privacy";
 import AiGovernance from "@/pages/ai-governance";
 import AiSearchLlmo from "@/pages/ai-search-llmo";
 import ForConstruction from "@/pages/for-construction";
+import PresidentExcel from "@/pages/president-excel";
 import Blog from "@/pages/Blog";
 import BlogPost from "@/pages/BlogPost";
 
@@ -19,6 +20,7 @@ function Router() {
       <Route path="/ai-governance" component={AiGovernance} />
       <Route path="/ai-search-llmo" component={AiSearchLlmo} />
       <Route path="/for-construction" component={ForConstruction} />
+      <Route path="/president-excel" component={PresidentExcel} />
       <Route path="/blog" component={Blog} />
       <Route path="/blog/:slug" component={BlogPost} />
       <Route component={NotFound} />
