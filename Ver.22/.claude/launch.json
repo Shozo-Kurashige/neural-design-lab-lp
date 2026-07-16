@@ -1,0 +1,13 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "NDL LP Dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "cwd": "/Volumes/NDL_Data/Project/neural-design-lab-lp",
+      "port": 5173,
+      "autoPort": true
+    }
+  ]
+}

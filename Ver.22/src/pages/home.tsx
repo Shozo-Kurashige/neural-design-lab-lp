@@ -4,6 +4,7 @@ import { HeroOpening } from "@/components/hero-opening";
 import { ChallengesSection } from "@/components/challenges-section";
 import { ApproachSection } from "@/components/approach-section";
 import { PhilosophySection } from "@/components/philosophy-section";
+import { TransformationExampleSection } from "@/components/transformation-example-section";
 
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
         <ChallengesSection />
         <ApproachSection />
         <PhilosophySection />
+        <TransformationExampleSection />
       </main>
     </div>
   );
