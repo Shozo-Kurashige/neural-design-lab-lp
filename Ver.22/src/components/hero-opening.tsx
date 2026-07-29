@@ -5,6 +5,14 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 // ページロードごとにリセット、SPA遷移では保持
 let hasPlayed = false;
 
+const subLines = [
+  "現場の知恵は残す。",
+  "混乱だけをほどく。",
+  "AIやDXが、現場で無理なく回る形へ。",
+];
+const SUB_TOTAL    = subLines.reduce((n, s) => n + [...s].length, 0); // 37
+const SUB_INTERVAL = Math.floor(2000 / SUB_TOTAL);                    // 54ms
+
 export function HeroOpening() {
   const [animate] = useState<boolean>(() => {
     if (hasPlayed) return false;
@@ -14,32 +22,32 @@ export function HeroOpening() {
 
   const heroRef    = useRef<HTMLDivElement>(null);
   const leadInRef  = useRef<HTMLParagraphElement>(null);
+  const typingRef  = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  /* ─── 状態（done モードは最初から最終値でフラッシュなし） ─── */
-  const [blackVisible,    setBlackVisible]    = useState(animate);
-  const [blackMounted,    setBlackMounted]    = useState(animate);  // ① フェード完了後に unmount
-  const [introFadeIn,     setIntroFadeIn]     = useState(false);
-  const [flyingText,      setFlyingText]      = useState(animate);
-  const [flyingStyle,     setFlyingStyle]     = useState<React.CSSProperties>(
+  /* ─── 状態 ─── */
+  const [blackVisible,  setBlackVisible]  = useState(animate);
+  const [blackMounted,  setBlackMounted]  = useState(animate);
+  const [introFadeIn,   setIntroFadeIn]   = useState(false);
+  const [flyingText,    setFlyingText]    = useState(animate);
+  const [flyingStyle,   setFlyingStyle]   = useState<React.CSSProperties>(
     animate
       ? { position: "absolute", top: "40%", left: "50%", transform: "translateX(-50%)" }
       : {}
   );
-  const [leadInVisible,   setLeadInVisible]   = useState(!animate);
-  const [copy1Visible,    setCopy1Visible]    = useState(!animate);
-  const [copy2Visible,    setCopy2Visible]    = useState(!animate);
-  const [sub1Visible,     setSub1Visible]     = useState(!animate);
-  const [sub2Visible,     setSub2Visible]     = useState(!animate);
-  const [sub3Visible,     setSub3Visible]     = useState(!animate);
-  const [bizVisible,      setBizVisible]      = useState(!animate);
-  const [ctaVisible,      setCtaVisible]      = useState(!animate);
+  const [leadInVisible, setLeadInVisible] = useState(!animate);
+  const [copy1Visible,  setCopy1Visible]  = useState(!animate);
+  const [copy2Visible,  setCopy2Visible]  = useState(!animate);
+  const [typedChars,    setTypedChars]    = useState(!animate ? SUB_TOTAL : 0);
+  const [cursorOn,      setCursorOn]      = useState(false);
+  const [bizVisible,    setBizVisible]    = useState(!animate);
+  const [ctaVisible,    setCtaVisible]    = useState(!animate);
 
   /* ─── FLIP: イントロテキストをリードイン位置へ移動 ─── */
   const moveIntroText = useCallback(() => {
     if (!leadInRef.current || !heroRef.current) return;
-    const heroRect  = heroRef.current.getBoundingClientRect();
-    const leadRect  = leadInRef.current.getBoundingClientRect();
-    const isMobile  = window.innerWidth < 768;
+    const heroRect = heroRef.current.getBoundingClientRect();
+    const leadRect = leadInRef.current.getBoundingClientRect();
+    const isMobile = window.innerWidth < 768;
 
     if (isMobile) {
       setFlyingStyle({
@@ -70,26 +78,38 @@ export function HeroOpening() {
     if (!animate) return;
 
     const timers = [
-      setTimeout(() => setIntroFadeIn(true),    80),
+      setTimeout(() => setIntroFadeIn(true),   80),
       setTimeout(() => {
-        setBlackVisible(false);                             // 2s〜  黒フェードアウト（2000ms）
+        setBlackVisible(false);                           // 2.0s 黒フェードアウト（2000ms）
         moveIntroText();
       }, 2000),
-      setTimeout(() => setBlackMounted(false),   4200),    // 4.2s  黒オーバーレイ DOM から削除
-      setTimeout(() => {                                    // 3.5s  メインコピー一気に表示
+      setTimeout(() => setBlackMounted(false), 4200),    // 4.2s 黒オーバーレイ DOM 削除
+      setTimeout(() => {                                  // 3.5s メインコピー一括表示
         setCopy1Visible(true);
         setCopy2Visible(true);
       }, 3500),
-      setTimeout(() => setSub1Visible(true),    6000),     // 6.0s  サブコピー1行目
-      setTimeout(() => setSub2Visible(true),    7250),     // 7.25s サブコピー2行目
-      setTimeout(() => setSub3Visible(true),    8500),     // 8.5s  サブコピー3行目
-      setTimeout(() => {                                    // 10.0s 業務整理ラベル＋CTA一括
+      setTimeout(() => {                                  // 5.0s サブコピー タイプライター開始
+        setCursorOn(true);
+        let count = 0;
+        typingRef.current = setInterval(() => {
+          count++;
+          setTypedChars(count);
+          if (count >= SUB_TOTAL) {
+            if (typingRef.current) clearInterval(typingRef.current);
+            setTimeout(() => setCursorOn(false), 400);   // 7.0s+0.4s カーソル消去
+          }
+        }, SUB_INTERVAL);
+      }, 5000),
+      setTimeout(() => {                                  // 7.5s 業務ラベル＋CTA
         setBizVisible(true);
         setCtaVisible(true);
-      }, 10000),
+      }, 7500),
     ];
 
-    return () => timers.forEach(clearTimeout);
+    return () => {
+      timers.forEach(clearTimeout);
+      if (typingRef.current) clearInterval(typingRef.current);
+    };
   }, [animate, moveIntroText]);
 
   /* ─── スタイルヘルパー ─── */
@@ -102,15 +122,14 @@ export function HeroOpening() {
   return (
     <div ref={heroRef} className="relative w-full z-20">
 
-      {/* 背景画像（② willChange: transform で常時 GPU レイヤー確保） */}
+      {/* 背景画像 */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: "url('/hero_bk.webp')" }}
       />
-      {/* テキスト視認性オーバーレイ */}
       <div className="absolute inset-0 bg-black/25" />
 
-      {/* ① 黒背景オーバーレイ：フェード完了後に unmount してレイヤー解放を防ぐ */}
+      {/* 黒オーバーレイ */}
       {blackMounted && (
         <div
           className="absolute inset-0 bg-black pointer-events-none z-20"
@@ -128,10 +147,7 @@ export function HeroOpening() {
           style={{
             ...flyingStyle,
             opacity:    introFadeIn ? 1 : 0,
-            transition: [
-              flyingStyle.transition,
-              "opacity 750ms ease-out",
-            ].filter(Boolean).join(", "),
+            transition: [flyingStyle.transition, "opacity 750ms ease-out"].filter(Boolean).join(", "),
           }}
         >
           現場を見ている社長へ。
@@ -169,20 +185,28 @@ export function HeroOpening() {
             </p>
           </div>
 
-          {/* サブコピー（1行ずつ表示） */}
+          {/* サブコピー — タイプライター（5.0s〜7.0s） */}
           <div className="mb-2 md:mb-6 space-y-1 md:space-y-1.5 text-center md:text-left">
-            <p className="text-white/90 text-[1.05rem] md:text-[1.35rem] font-['Noto_Serif_JP'] tracking-wider"
-               style={fadeIn(sub1Visible)}>
-              現場の知恵は残す。
-            </p>
-            <p className="text-white/90 text-[1.05rem] md:text-[1.35rem] font-['Noto_Serif_JP'] tracking-wider"
-               style={fadeIn(sub2Visible)}>
-              混乱だけをほどく。
-            </p>
-            <p className="text-white/85 text-[1.05rem] md:text-[1.35rem] font-['Noto_Serif_JP'] tracking-wider pt-1"
-               style={fadeIn(sub3Visible)}>
-              AIやDXが、現場で無理なく回る形へ。
-            </p>
+            {subLines.map((line, li) => {
+              const lineStart = subLines.slice(0, li).reduce((n, s) => n + [...s].length, 0);
+              const lineLen   = [...line].length;
+              const charsShow = Math.max(0, Math.min(typedChars - lineStart, lineLen));
+              const visible   = typedChars > lineStart;
+              const isActive  = typedChars > lineStart && typedChars <= lineStart + lineLen;
+
+              return (
+                <p
+                  key={li}
+                  className="text-white/90 text-[1.05rem] md:text-[1.35rem] font-mono tracking-wider"
+                  style={{ opacity: visible ? 1 : 0 }}
+                >
+                  {[...line].slice(0, charsShow).join("")}
+                  {isActive && cursorOn && (
+                    <span className="animate-pulse ml-0.5 text-white/80">▋</span>
+                  )}
+                </p>
+              );
+            })}
           </div>
 
           {/* 業務整理ラベル */}

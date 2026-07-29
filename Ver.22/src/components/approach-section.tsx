@@ -1,6 +1,7 @@
-import React, { useRef } from "react";
-import { motion, useInView } from "framer-motion";
-import { HeroBg } from "@/components/hero-bg";
+import React from "react";
+import { motion, useReducedMotion } from "framer-motion";
+
+const VIEWPORT = { once: true, margin: "-100px" } as const;
 
 const steps = [
   {
@@ -26,36 +27,62 @@ const steps = [
 ];
 
 export function ApproachSection() {
-  const ref = useRef<HTMLDivElement>(null);
-  // セクション上端が画面に入ったら一度だけ発火
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const prefersReduced = useReducedMotion();
+
+  function anim(delay: number) {
+    return {
+      initial:     { opacity: 0, y: prefersReduced ? 0 : 16 },
+      whileInView: { opacity: 1, y: 0 },
+      viewport:    VIEWPORT,
+      transition:  {
+        duration: prefersReduced ? 0.01 : 0.6,
+        delay:    prefersReduced ? 0    : delay / 1000,
+        ease:     "easeOut",
+      },
+    } as const;
+  }
 
   return (
-    <section id="approach" className="relative w-full py-24 md:py-32">
-      <HeroBg overlay="rgba(255,255,255,0.90)" />
+    <section id="approach" className="w-full py-24 md:py-32 bg-[#FDFBF7]">
 
-      <div ref={ref} className="relative z-10 max-w-3xl mx-auto px-6 md:px-12">
+      <div className="max-w-4xl mx-auto px-6 md:px-12">
 
-        <h2 className="text-[1.35rem] md:text-[1.9rem] font-['Noto_Serif_JP'] font-bold leading-snug text-center mb-14 md:mb-20"
-            style={{ color: "#1a1a1a" }}>
-          まず、現場をほどきます。
-        </h2>
+        {/* ラベル */}
+        <motion.span
+          {...anim(0)}
+          className="block text-center text-[#D4AF37] font-bold tracking-widest text-sm font-['Noto_Sans_JP'] mb-5"
+        >
+          まず、やること
+        </motion.span>
 
+        {/* 見出し */}
+        <motion.h2
+          {...anim(100)}
+          className="text-[1.35rem] md:text-[1.9rem] font-['Noto_Serif_JP'] font-bold leading-snug text-center mb-14 md:mb-20"
+          style={{ color: "#1a1a1a" }}
+        >
+          最初に、現場をほどきます。
+        </motion.h2>
+
+        {/* 5項目 — 見出しから1秒後にフェードイン */}
         <div className="flex flex-col gap-4 md:gap-5">
           {steps.map((step, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 12 }}
-              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
-              transition={{ duration: 0.5, delay: i * 0.3, ease: "easeOut" }}
-              className="group flex flex-col md:flex-row md:items-center gap-2 md:gap-6 rounded-sm px-6 py-5 md:px-8 md:py-6 shadow-sm hover:shadow-lg transition-all duration-300 cursor-default"
-              style={{ backgroundColor: "#FDFBF7" }}
+              {...anim(1000 + i * 100)}
+              className="group flex flex-col md:flex-row md:items-center gap-2 md:gap-6 rounded-sm px-6 py-5 md:px-8 md:py-6 shadow-sm hover:shadow-lg transition-shadow duration-300 cursor-default"
+              style={{ backgroundColor: "#ffffff", willChange: "opacity, transform" }}
             >
-              <p className="shrink-0 md:w-24 text-[1.15rem] md:text-[1.25rem] font-['Noto_Serif_JP'] font-bold tracking-wider text-center md:text-left text-[#1a1a1a] transition-colors duration-300 group-hover:text-[#D4AF37]">
+              <p
+                className="shrink-0 md:w-28 text-[1.2rem] md:text-[1.35rem] font-['Noto_Serif_JP'] font-bold tracking-wider text-left border-l-4 pl-3 transition-colors duration-300 text-[#1a1a1a] group-hover:text-[#D4AF37]"
+                style={{ borderColor: "#D4AF37" }}
+              >
                 {step.name}
               </p>
-              <p className="text-[0.9rem] md:text-[0.95rem] font-['Noto_Sans_JP'] leading-relaxed tracking-wide text-center md:text-left"
-                 style={{ color: "#4a4a4a" }}>
+              <p
+                className="text-[0.95rem] md:text-[1.05rem] font-['Noto_Sans_JP'] leading-relaxed tracking-wide text-left"
+                style={{ color: "#4a4a4a" }}
+              >
                 {step.desc}
               </p>
             </motion.div>
