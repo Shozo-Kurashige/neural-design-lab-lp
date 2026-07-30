@@ -1,6 +1,7 @@
 import React from "react";
 import { Header } from "@/components/header";
 import { HeroOpening } from "@/components/hero-opening";
+import { NdlAboutSection } from "@/components/ndl-about-section";
 import { ChallengesSection } from "@/components/challenges-section";
 import { ApproachSection } from "@/components/approach-section";
 import { PhilosophySection } from "@/components/philosophy-section";
@@ -12,6 +13,7 @@ export default function Home() {
       <Header />
       <main>
         <HeroOpening />
+        <NdlAboutSection />
         <ChallengesSection />
         <ApproachSection />
         <PhilosophySection />
