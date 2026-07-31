@@ -31,11 +31,11 @@ export function ApproachSection() {
 
   function anim(delay: number) {
     return {
-      initial:     { opacity: 0, y: prefersReduced ? 0 : 16 },
+      initial:     { opacity: 0, y: prefersReduced ? 0 : 10 },
       whileInView: { opacity: 1, y: 0 },
       viewport:    VIEWPORT,
       transition:  {
-        duration: prefersReduced ? 0.01 : 0.6,
+        duration: prefersReduced ? 0.01 : 0.35,
         delay:    prefersReduced ? 0    : delay / 1000,
         ease:     "easeOut",
       },
@@ -69,7 +69,7 @@ export function ApproachSection() {
           {steps.map((step, i) => (
             <motion.div
               key={i}
-              {...anim(1000 + i * 100)}
+              {...anim(200 + i * 60)}
               className="group flex flex-col md:flex-row md:items-center gap-2 md:gap-6 rounded-sm px-6 py-5 md:px-8 md:py-6 shadow-sm hover:shadow-lg transition-shadow duration-300 cursor-default"
               style={{ backgroundColor: "#ffffff", willChange: "opacity, transform" }}
             >

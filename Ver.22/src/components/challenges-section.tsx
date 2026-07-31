@@ -5,10 +5,10 @@ const VIEWPORT = { once: true, margin: "-80px" } as const;
 
 function anim(delay: number) {
   return {
-    initial:     { opacity: 0, y: 16 },
+    initial:     { opacity: 0, y: 10 },
     whileInView: { opacity: 1, y: 0 },
     viewport:    VIEWPORT,
-    transition:  { duration: 0.7, delay: delay / 1000, ease: "easeOut" },
+    transition:  { duration: 0.35, delay: delay / 1000, ease: "easeOut" },
   } as const;
 }
 
@@ -19,7 +19,7 @@ const items = [
       "人によって仕事のやり方が違う",
       "判断が特定の人に集まっている",
     ],
-    delay: 1000,
+    delay: 200,
   },
   {
     title: "古い仕組の残存",
@@ -27,7 +27,7 @@ const items = [
       "古いExcelやシステムが残っている",
       "情シスや詳しい人が便利屋になっている",
     ],
-    delay: 1100,
+    delay: 260,
   },
   {
     title: "AI導入前の混乱",
@@ -35,7 +35,7 @@ const items = [
       "AIを導入したいが、どこから​手をつけるか分からない",
       "例外処理が多く、マニュアルだけでは回らない",
     ],
-    delay: 1200,
+    delay: 320,
   },
 ];
 

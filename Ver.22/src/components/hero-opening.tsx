@@ -105,7 +105,7 @@ export function HeroOpening() {
       setTimeout(() => {                                  // 9.5s 業務ラベル＋CTA
         setBizVisible(true);
         setCtaVisible(true);
-      }, 9500),
+      }, 9000),
     ];
 
     return () => {

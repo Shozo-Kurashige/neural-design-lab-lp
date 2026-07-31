@@ -1,23 +1,28 @@
-import React from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import React, { useRef } from "react";
+import { motion, useInView, useReducedMotion } from "framer-motion";
 
-const textCls = "text-[1.35rem] md:text-[2.15rem] leading-relaxed md:leading-loose tracking-wider font-bold font-['Noto_Sans_JP'] text-[#4e454a] md:text-[#7d7d7d]";
+const textCls = "text-[1.35rem] md:text-[2.15rem] leading-relaxed md:leading-loose tracking-wider font-bold font-['M_PLUS_1p'] text-[#4e454a] md:text-[#7d7d7d]";
 
 export function NdlAboutSection() {
   const prefersReduced = useReducedMotion();
+  const ref = useRef<HTMLDivElement>(null);
+  const margin = typeof window !== "undefined" && window.innerWidth < 768 ? "-80px" : "-300px";
+  const isInView = useInView(ref, { once: true, margin });
 
   return (
     <section className="w-full py-24 md:py-48 bg-[#FDFBF7]">
       <div className="max-w-4xl mx-auto px-6 md:px-12 text-center">
         <motion.div
-          initial={{ opacity: 0, y: prefersReduced ? 0 : 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: prefersReduced ? 0.01 : 0.8, ease: "easeOut" }}
+          ref={ref}
+          animate={{
+            opacity: isInView ? 1 : 0,
+            y:       isInView ? 0 : (prefersReduced ? 0 : 20),
+          }}
+          transition={{ duration: prefersReduced ? 0.01 : 0.6, ease: "easeOut" }}
           className="space-y-6 md:space-y-8"
         >
           {/* ラベル */}
-          <span className="block text-[#D4AF37] font-bold tracking-widest text-sm font-['Noto_Sans_JP']">
+          <span className="block text-[#D4AF37] font-bold tracking-widest text-sm font-['M_PLUS_1p']">
             NDLとは
           </span>
 
@@ -36,12 +41,12 @@ export function NdlAboutSection() {
 
           {/* 本文2 */}
           <p className={textCls}>
-            経営と現場と技術のあいだに、<br className="block md:hidden" />
-            ちょうどいいを。
+            経営と現場と技術のあいだに、<br />
+            「ちょうどいい」を。
           </p>
 
           {/* ロゴテキスト */}
-          <p className="text-[1.15rem] md:text-[1.3rem] tracking-widest font-bold font-['Noto_Sans_JP'] text-[#4e454a] md:text-[#7d7d7d]">
+          <p className="text-[1.15rem] md:text-[1.3rem] tracking-widest font-bold font-['M_PLUS_1p'] text-[#4e454a] md:text-[#7d7d7d]">
             Neural Design Lab
           </p>
         </motion.div>
