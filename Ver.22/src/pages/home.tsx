@@ -6,6 +6,7 @@ import { ChallengesSection } from "@/components/challenges-section";
 import { ApproachSection } from "@/components/approach-section";
 import { PhilosophySection } from "@/components/philosophy-section";
 import { TransformationExampleSection } from "@/components/transformation-example-section";
+import { ChoiceSection } from "@/components/choice-section";
 
 export default function Home() {
   return (
@@ -18,6 +19,7 @@ export default function Home() {
         <ApproachSection />
         <PhilosophySection />
         <TransformationExampleSection />
+        <ChoiceSection />
       </main>
     </div>
   );
