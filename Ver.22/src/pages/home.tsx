@@ -7,6 +7,7 @@ import { ApproachSection } from "@/components/approach-section";
 import { PhilosophySection } from "@/components/philosophy-section";
 import { TransformationExampleSection } from "@/components/transformation-example-section";
 import { ChoiceSection } from "@/components/choice-section";
+import { ProcessSection } from "@/components/process-section";
 
 export default function Home() {
   return (
@@ -20,6 +21,7 @@ export default function Home() {
         <PhilosophySection />
         <TransformationExampleSection />
         <ChoiceSection />
+        <ProcessSection />
       </main>
     </div>
   );
