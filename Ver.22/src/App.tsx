@@ -5,6 +5,8 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
+import AboutPage from "@/pages/about-page";
+import ServicesPage from "@/pages/services-page";
 import Privacy from "@/pages/privacy";
 import AiGovernance from "@/pages/ai-governance";
 import AiSearchLlmo from "@/pages/ai-search-llmo";
@@ -26,6 +28,8 @@ function Router() {
     <ScrollToTop />
     <Switch>
       <Route path="/" component={Home} />
+      <Route path="/about" component={AboutPage} />
+      <Route path="/services" component={ServicesPage} />
       <Route path="/privacy" component={Privacy} />
       <Route path="/ai-governance" component={AiGovernance} />
       <Route path="/ai-search-llmo" component={AiSearchLlmo} />

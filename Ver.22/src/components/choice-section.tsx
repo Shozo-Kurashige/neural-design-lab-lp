@@ -108,6 +108,20 @@ export function ChoiceSection() {
           </motion.div>
 
         </div>
+
+        {/* サービス一覧ボタン */}
+        <motion.div {...anim(450)} className="mt-8 md:mt-10">
+          <a
+            href="/services"
+            className="group flex items-center justify-center gap-3 w-full py-4 bg-[#D4AF37] hover:bg-[#2C3E30] text-[#2C3E30] hover:text-[#D4AF37] font-bold font-['Noto_Sans_JP'] tracking-wider text-sm md:text-base transition-all duration-300"
+          >
+            サービス一覧を見る
+            <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">
+              →
+            </span>
+          </a>
+        </motion.div>
+
       </div>
     </section>
     </>

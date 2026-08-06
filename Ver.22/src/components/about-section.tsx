@@ -12,7 +12,7 @@ import { FadeIn } from "@/components/fade-in";
 
 export function AboutSection() {
   return (
-    <section id="about" className="py-24 bg-[#FDFBF7] relative scroll-mt-20">
+    <section id="about-section" className="py-24 bg-[#FDFBF7] relative scroll-mt-20">
       <div className="absolute top-0 left-0 w-64 h-64 bg-[#D4AF37]/5 rounded-full blur-3xl pointer-events-none -translate-x-1/2 -translate-y-1/2"></div>
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#2C3E30]/5 rounded-full blur-3xl pointer-events-none translate-x-1/3 translate-y-1/3"></div>
 
@@ -40,36 +40,36 @@ export function AboutSection() {
             </FadeIn>
 
             <FadeIn delay={200}>
-              <div className="space-y-6 text-gray-600 leading-loose text-justify font-medium mb-10">
-                <p>
+              <div className="text-gray-600 leading-loose font-medium mb-10">
+                {/* 段落1 */}
+                <p className="mb-6">
                   私がこれまで見てきた現場には、たくさんの「仕方ない」がありました。
                 </p>
-                <p>
-                  人によってやり方が違う。
-                  判断が一部の人に集まる。
-                  例外対応が積み重なり、誰かの頑張りで何とか回っている。
-                  忙しさの中で、改善したくても手がつけられない。
-                </p>
-                <p>
-                  そうした現場を、私は長く見てきました。
-                </p>
-                <p>
-                  AIやDXは、魔法ではありません。
-                  ツールを入れただけで、現場が急に楽になるわけでもありません。
-                </p>
-                <p>
-                  けれど、業務の流れを整理し、判断基準を言葉にし、現場の知恵を仕組みに変えていけば、AIは確かに力になります。
-                </p>
-                <p>
-                  Neural Design Labは、現場を置き去りにしないAI・DX支援を行います。
-                </p>
-                <p>
-                  大きな改革を一気に進めるのではなく、まずは目の前の面倒をほどくことから。
-                  現場で働く人が、明日少しでも動きやすくなることから。
-                </p>
-                <p>
-                  その積み重ねが、会社の力になると考えています。
-                </p>
+
+                {/* 箇条書き */}
+                <ul className="mb-6 space-y-1 pl-1 list-none">
+                  <li>・人によってやり方が違う。</li>
+                  <li>・判断が一部の人に集まる。</li>
+                  <li>・例外対応が積み重なり、誰かの頑張りで何とか回っている。</li>
+                  <li>・忙しさの中で、改善したくても手がつけられない。</li>
+                </ul>
+
+                {/* グループ：空行なしで続く3文 */}
+                <div className="mb-6">
+                  <p>そうした現場を、私は長く見てきました。</p>
+                  <p>AIやDXは、魔法ではありません。ツールを入れただけで、現場が急に楽になるわけでもありません。</p>
+                  <p>けれど、業務の流れを整理し、判断基準を言葉にし、現場の知恵を仕組みに変えていけば、AIは確かに力になります。</p>
+                </div>
+
+                {/* グループ：空行なしで続く4文 */}
+                <div className="mb-6">
+                  <p>Neural Design Labは、現場を置き去りにしないAI・DX支援を行います。</p>
+                  <p>大きな改革を一気に進めるのではなく、まずは目の前の面倒をほどく。</p>
+                  <p>人を責めるのではなく、仕事がうまく回らない構造を見つけ、一つずつ整えていく。</p>
+                  <p>現場で働く人が明日、少しでも動きやすくなることの積み重ねが会社の力になると考えています。</p>
+                </div>
+
+                {/* 結び */}
                 <p>
                   「先生」ではなく「パートナー」として。あなたの現場に、私たちを招いてください。
                 </p>

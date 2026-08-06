@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { getAllPosts } from "@/lib/wordpress";
 
 // ページロードごとにリセット、SPA遷移では保持
 let hasPlayed = false;
@@ -42,6 +43,15 @@ export function HeroOpening() {
   const [cursorOn,      setCursorOn]      = useState(false);
   const [bizVisible,    setBizVisible]    = useState(!animate);
   const [ctaVisible,    setCtaVisible]    = useState(!animate);
+  const [linksVisible,  setLinksVisible]  = useState(!animate);
+  const [latestSlug,    setLatestSlug]    = useState<string | null>(null);
+
+  /* ─── 最新記事スラッグを取得 ─── */
+  useEffect(() => {
+    getAllPosts()
+      .then(posts => { if (posts?.[0]) setLatestSlug(posts[0].slug); })
+      .catch(() => {});
+  }, []);
 
   /* ─── FLIP: イントロテキストをリードイン位置へ移動 ─── */
   const moveIntroText = useCallback(() => {
@@ -102,10 +112,11 @@ export function HeroOpening() {
           }
         }, SUB_INTERVAL);
       }, 4000),
-      setTimeout(() => {                                  // 9.5s 業務ラベル＋CTA
+      setTimeout(() => {                                  // 9.0s 業務ラベル＋CTA
         setBizVisible(true);
         setCtaVisible(true);
       }, 9000),
+      setTimeout(() => setLinksVisible(true), 9300),    // 9.3s 最新情報・Blogリンク
     ];
 
     return () => {
@@ -247,6 +258,69 @@ export function HeroOpening() {
             className="inline-block px-8 md:px-12 py-3.5 md:py-5 bg-[#D4AF37] text-white text-[0.9rem] md:text-[1.35rem] font-bold rounded-sm shadow-md hover:bg-[#c19f30] hover:shadow-lg transition-colors"
           >
             初回60分の壁打ちを予約する
+          </a>
+        </div>
+
+        {/* 最新情報・Blog リンク — デスクトップ: 右上絶対配置 */}
+        <div
+          className="hidden md:flex flex-col absolute top-20 right-0 w-[23%]"
+          style={fadeIn(linksVisible)}
+        >
+          <a
+            href="#whats-up"
+            className="flex items-center justify-between px-8 py-4 bg-[#2C3E30]/90 text-white/90 text-sm font-['Noto_Sans_JP'] tracking-wide hover:bg-[#2C3E30] transition-colors border-b border-white/10"
+          >
+            <span>最新情報はこちら</span>
+            <span className="text-[#D4AF37] ml-4">{">>"}</span>
+          </a>
+          <div className="group">
+            <div className="flex items-center justify-between px-8 py-4 bg-[#2C3E30]/90 text-white/90 text-sm font-['Noto_Sans_JP'] tracking-wide group-hover:bg-[#2C3E30] transition-colors cursor-default select-none">
+              <span>Blog</span>
+              <span className="text-[#D4AF37] ml-4">{">>"}</span>
+            </div>
+            <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-all duration-300 ease-in-out">
+              <div className="overflow-hidden">
+                <a
+                  href={latestSlug ? `/blog/${latestSlug}` : "/blog"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between px-8 py-3 bg-[#3d5443] text-white/80 text-xs font-['Noto_Sans_JP'] tracking-wide hover:bg-[#4a6450] transition-colors border-t border-white/10"
+                >
+                  <span>最新記事</span>
+                  <span className="text-[#D4AF37]">→</span>
+                </a>
+                <a
+                  href="/blog"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between px-8 py-3 bg-[#3d5443] text-white/80 text-xs font-['Noto_Sans_JP'] tracking-wide hover:bg-[#4a6450] transition-colors border-t border-white/10"
+                >
+                  <span>記事一覧</span>
+                  <span className="text-[#D4AF37]">→</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 最新情報・Blog リンク — モバイル: CTAの下にインライン */}
+        <div
+          className="flex items-center justify-center gap-10 px-6 pb-8 pt-1 md:hidden"
+          style={fadeIn(linksVisible)}
+        >
+          <a
+            href="#whats-up"
+            className="text-white/75 text-sm font-['Noto_Sans_JP'] tracking-wide border-b border-white/40 pb-0.5"
+          >
+            最新情報はこちら
+          </a>
+          <a
+            href="https://neuraldesignlab.jp/blog/reverse-prompting-language"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-white/75 text-sm font-['Noto_Sans_JP'] tracking-wide border-b border-white/40 pb-0.5"
+          >
+            Blogはこちら
           </a>
         </div>
 

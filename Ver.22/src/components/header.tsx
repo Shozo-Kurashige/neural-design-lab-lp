@@ -4,9 +4,11 @@ import { Menu, X, ArrowLeft } from "lucide-react";
 export function Header({
   simple = false,
   alwaysWhite = false,
+  backLabel = "TOPへ戻る",
 }: {
   simple?: boolean;
   alwaysWhite?: boolean;
+  backLabel?: string;
 }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -24,7 +26,7 @@ export function Header({
             className="flex items-center gap-2 px-6 py-2.5 bg-[#2C3E30] text-white text-sm font-bold rounded-sm hover:bg-[#3A5240] transition-colors shadow-sm hover:shadow-md"
           >
             <ArrowLeft className="w-4 h-4" />
-            TOPへ戻る
+            {backLabel}
           </a>
         </div>
       </header>
@@ -38,7 +40,7 @@ export function Header({
     { label: "技術・セキュリティ", href: "/maesabaki" },
     { label: "導入の流れ", href: "/#process" },
     { label: "料金", href: "/#price" },
-    { label: "私たちについて", href: "/#about" },
+    { label: "私たちについて", href: "/about" },
   ];
 
   return (

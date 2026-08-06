@@ -45,10 +45,16 @@ export function NdlAboutSection() {
             「ちょうどいい」を。
           </p>
 
-          {/* ロゴテキスト */}
-          <p className="text-[1.15rem] md:text-[1.3rem] tracking-widest font-bold font-['M_PLUS_1p'] text-[#4e454a] md:text-[#7d7d7d]">
-            Neural Design Lab
-          </p>
+          {/* Aboutリンク */}
+          <a
+            href="/about"
+            className="group inline-flex items-center gap-3 px-8 py-3.5 bg-[#D4AF37] hover:bg-[#2C3E30] text-[#2C3E30] hover:text-[#D4AF37] font-bold font-['M_PLUS_1p'] tracking-wider text-sm md:text-base transition-all duration-300"
+          >
+            私たちについて詳しく見る
+            <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">
+              →
+            </span>
+          </a>
         </motion.div>
       </div>
     </section>

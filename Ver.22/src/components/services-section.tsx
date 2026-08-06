@@ -8,9 +8,9 @@ import {
   Smartphone,
   CheckCircle2,
   MessageCircleHeart,
-  Sparkles,
 } from "lucide-react";
 import { FadeIn } from "@/components/fade-in";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const services = [
   {
@@ -67,31 +67,9 @@ const services = [
   },
 ];
 
-const llmoService = {
-  icon: <Sparkles className="w-8 h-8" />,
-  title: "AI検索・LLMO対策支援",
-  description:
-    "AI検索で見つけられるために、まず自社の歴史・強み・こだわり・現場の一次情報を整理します。難しいSEO用語や技術対策の前に、“自社にしか書けない言葉”を掘り起こし、AIにも人にも伝わる情報発信の土台を整えます。",
-  featuresLeft: [
-    "自社の強み・一次情報の棚卸し",
-    "LLMO/AEO向けコンテンツ設計",
-  ],
-  featuresRight: [
-    "ブログ・FAQ・サービスページ改善",
-    "AIに伝わる定義文・導線設計",
-  ],
-  secretMessage:
-    "AI検索対策を入口に、現場の一次情報と業務課題を掘り起こします。",
-};
-
-const LLMO_INDEX = services.length; // 4
-
 export function ServicesSection() {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
-
-  const toggleCard = (index: number) => {
-    setActiveIndex(activeIndex === index ? null : index);
-  };
+  const isMobile = useIsMobile();
 
   return (
     <section id="services" className="py-24 bg-[#E8ECE9]/30 scroll-mt-20">
@@ -120,7 +98,12 @@ export function ServicesSection() {
             return (
               <FadeIn key={index} delay={index * 100}>
                 <div
-                  onClick={() => toggleCard(index)}
+                  {...(isMobile
+                    ? { onClick: () => setActiveIndex(index) }
+                    : {
+                        onMouseEnter: () => setActiveIndex(index),
+                        onMouseLeave: () => setActiveIndex(null),
+                      })}
                   className={`bg-white rounded-sm border transition-all duration-300 group flex flex-col h-full cursor-pointer overflow-hidden ${
                     isActive
                       ? "shadow-xl border-[#D4AF37]/50"
@@ -128,8 +111,13 @@ export function ServicesSection() {
                   }`}
                 >
                   <div className="p-8 md:p-10 flex flex-col flex-grow">
-                    <div className="mb-6 inline-flex p-4 bg-[#F5F7F6] rounded-full text-[#2C3E30] group-hover:bg-[#2C3E30] group-hover:text-[#D4AF37] transition-colors duration-300 self-start">
-                      {service.icon}
+                    <div className="mb-6 flex items-center gap-3 self-start">
+                      <div className="inline-flex p-4 bg-[#F5F7F6] rounded-full text-[#2C3E30] group-hover:bg-[#2C3E30] group-hover:text-[#D4AF37] transition-colors duration-300">
+                        {service.icon}
+                      </div>
+                      <span className={`md:hidden text-sm font-bold tracking-widest text-gray-400 transition-opacity duration-300 ${isActive ? "opacity-0 pointer-events-none" : "opacity-100"}`}>
+                        TAP
+                      </span>
                     </div>
 
                     <h3 className="text-xl md:text-2xl font-['Noto_Serif_JP'] font-bold text-[#2C3E30] mb-4 group-hover:text-[#D4AF37] transition-colors">
@@ -152,13 +140,6 @@ export function ServicesSection() {
                       ))}
                     </ul>
 
-                    <div className="mt-6 text-right">
-                      <span
-                        className={`text-xs font-bold tracking-wider transition-opacity duration-300 ${isActive ? "text-[#D4AF37] opacity-100" : "text-gray-400 opacity-0 group-hover:opacity-100"}`}
-                      >
-                        {isActive ? "CLOSE" : "TAP TO READ"}
-                      </span>
-                    </div>
                   </div>
 
                   <div
@@ -181,90 +162,6 @@ export function ServicesSection() {
           })}
         </div>
 
-        {/* LLMOカード：全幅 */}
-        <FadeIn delay={400}>
-          <div
-            onClick={() => toggleCard(LLMO_INDEX)}
-            className={`mt-8 md:mt-12 bg-white rounded-sm border transition-all duration-300 group cursor-pointer overflow-hidden ${
-              activeIndex === LLMO_INDEX
-                ? "shadow-xl border-[#D4AF37]/50"
-                : "border-gray-100 shadow-sm hover:shadow-lg"
-            }`}
-          >
-            <div className="p-8 md:p-10">
-              <div className="mb-6 inline-flex p-4 bg-[#F5F7F6] rounded-full text-[#2C3E30] group-hover:bg-[#2C3E30] group-hover:text-[#D4AF37] transition-colors duration-300">
-                {llmoService.icon}
-              </div>
-
-              <h3 className="text-xl md:text-2xl font-['Noto_Serif_JP'] font-bold text-[#2C3E30] mb-4 group-hover:text-[#D4AF37] transition-colors">
-                {llmoService.title}
-              </h3>
-
-              <p className="text-gray-600 leading-relaxed mb-8 max-w-3xl">
-                {llmoService.description}
-              </p>
-
-              {/* 箇条書き 2列 */}
-              <div className="grid md:grid-cols-2 gap-x-12 gap-y-3">
-                <ul className="space-y-3">
-                  {llmoService.featuresLeft.map((feature, i) => (
-                    <li
-                      key={i}
-                      className="flex items-start gap-3 text-sm text-gray-600"
-                    >
-                      <CheckCircle2 className="w-5 h-5 text-[#D4AF37] shrink-0" />
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-                <ul className="space-y-3">
-                  {llmoService.featuresRight.map((feature, i) => (
-                    <li
-                      key={i}
-                      className="flex items-start gap-3 text-sm text-gray-600"
-                    >
-                      <CheckCircle2 className="w-5 h-5 text-[#D4AF37] shrink-0" />
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="mt-6 text-right">
-                <span
-                  className={`text-xs font-bold tracking-wider transition-opacity duration-300 ${activeIndex === LLMO_INDEX ? "text-[#D4AF37] opacity-100" : "text-gray-400 opacity-0 group-hover:opacity-100"}`}
-                >
-                  {activeIndex === LLMO_INDEX ? "CLOSE" : "TAP TO READ"}
-                </span>
-              </div>
-            </div>
-
-            {/* アコーディオン：secretMessage */}
-            <div
-              className={`grid transition-all duration-500 ease-in-out bg-[#2C3E30] ${
-                activeIndex === LLMO_INDEX ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
-              }`}
-            >
-              <div className="overflow-hidden">
-                <div className="p-6 md:px-10 md:py-8 flex items-start gap-4">
-                  <MessageCircleHeart className="w-6 h-6 text-[#D4AF37] shrink-0 mt-1" />
-                  <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                    <p className="text-white font-['Noto_Serif_JP'] leading-relaxed text-[15px] tracking-wide">
-                      {llmoService.secretMessage}
-                    </p>
-                    <a
-                      href="/ai-search-llmo"
-                      onClick={(e) => e.stopPropagation()}
-                      className="text-[#D4AF37] text-sm font-bold underline underline-offset-2 hover:text-[#e8c25f] transition-colors shrink-0"
-                    >
-                      詳細はこちら
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </FadeIn>
       </div>
     </section>
   );
