@@ -22,13 +22,13 @@ export function Footer({ simple = false }: { simple?: boolean }) {
           <p className="text-xs text-gray-500">
             © {currentYear} Neural Design Lab. All rights reserved.
           </p>
-          <a
-            href="/"
+          <button
+            onClick={() => window.history.length <= 1 ? (window.location.href = "/") : window.history.back()}
             className="flex items-center gap-2 text-sm font-bold text-[#D4AF37] hover:text-white transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
-            TOPページへ戻る
-          </a>
+            戻る
+          </button>
         </div>
       </footer>
     );
@@ -79,13 +79,28 @@ export function Footer({ simple = false }: { simple?: boolean }) {
             </h3>
             <ul className="space-y-3 text-sm text-gray-400">
               <li>
-                <a href="/#philosophy" className="hover:text-[#D4AF37] transition-colors">
-                  大切にしていること
+                <a href="/#ndl-about" className="hover:text-[#D4AF37] transition-colors">
+                  NDLとは
                 </a>
               </li>
               <li>
-                <a href="/#whats-up" className="hover:text-[#D4AF37] transition-colors">
-                  最新情報
+                <a href="/#challenges" className="hover:text-[#D4AF37] transition-colors">
+                  なにをどうするか
+                </a>
+              </li>
+              <li>
+                <a href="/#philosophy" className="hover:text-[#D4AF37] transition-colors">
+                  私たちの考え方
+                </a>
+              </li>
+              <li>
+                <a href="/#transformation-example-section" className="hover:text-[#D4AF37] transition-colors">
+                  改善モデル
+                </a>
+              </li>
+              <li>
+                <a href="/ai-search-llmo" className="hover:text-[#D4AF37] transition-colors">
+                  AIサーチ・LLMO
                 </a>
               </li>
               <li>
@@ -94,18 +109,8 @@ export function Footer({ simple = false }: { simple?: boolean }) {
                 </a>
               </li>
               <li>
-                <a href="/#skills" className="hover:text-[#D4AF37] transition-colors">
-                  技術・セキュリティ
-                </a>
-              </li>
-              <li>
                 <a href="/#process" className="hover:text-[#D4AF37] transition-colors">
-                  導入の流れ
-                </a>
-              </li>
-              <li>
-                <a href="/#price" className="hover:text-[#D4AF37] transition-colors">
-                  料金
+                  ご支援の流れ
                 </a>
               </li>
             </ul>
@@ -118,7 +123,7 @@ export function Footer({ simple = false }: { simple?: boolean }) {
             <ul className="space-y-3 text-sm text-gray-400">
               <li>
                 <a
-                  href="/#about"
+                  href="/about"
                   className="hover:text-[#D4AF37] transition-colors"
                 >
                   私たちについて

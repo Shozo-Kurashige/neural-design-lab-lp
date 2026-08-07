@@ -18,7 +18,22 @@ import BlogPost from "@/pages/BlogPost";
 
 function ScrollToTop() {
   const [location] = useLocation();
-  useEffect(() => { window.scrollTo(0, 0); }, [location]);
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (hash) {
+      // SPAではpushStateしてもブラウザはアンカーを自動スクロールしないため手動で飛ばす
+      setTimeout(() => {
+        const el = document.getElementById(hash.slice(1));
+        if (el) el.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+      return;
+    }
+    document.documentElement.style.scrollBehavior = "auto";
+    window.scrollTo(0, 0);
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      document.documentElement.style.scrollBehavior = "";
+    }));
+  }, [location]);
   return null;
 }
 

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useRoute, Link } from "wouter";
 import { getPostBySlug } from "@/lib/wordpress";
-import { ArrowLeft, Calendar, Home, List } from "lucide-react";
+import { ArrowLeft, Calendar, List } from "lucide-react";
 
 export default function BlogPost() {
   const [, params] = useRoute("/blog/:slug");
@@ -99,12 +99,13 @@ export default function BlogPost() {
             </a>
           </Link>
 
-          <Link href="/">
-            <a className="w-full md:w-auto px-8 py-3 border border-[#333] bg-[#0a0a0a] text-gray-400 text-sm font-medium rounded-full hover:border-white hover:text-white transition-all duration-300 flex items-center justify-center gap-2">
-              <Home className="w-4 h-4" />
-              TOPへ戻る
-            </a>
-          </Link>
+          <button
+            onClick={() => window.history.length <= 1 ? (window.location.href = "/") : window.history.back()}
+            className="w-full md:w-auto px-8 py-3 border border-[#333] bg-[#0a0a0a] text-gray-400 text-sm font-medium rounded-full hover:border-white hover:text-white transition-all duration-300 flex items-center justify-center gap-2"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            戻る
+          </button>
         </div>
       </div>
     </div>

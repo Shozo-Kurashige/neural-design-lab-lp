@@ -41,7 +41,7 @@ const items = [
 
 export function ChallengesSection() {
   return (
-    <section id="challenges" className="w-full py-24 md:py-32 -mt-20 z-10 bg-white" style={{ position: "relative" }}>
+    <section id="challenges" className="w-full py-24 md:py-32 -mt-20 z-10 bg-white scroll-mt-20" style={{ position: "relative" }}>
 
       <div className="relative z-10 max-w-5xl mx-auto px-6 md:px-12">
 

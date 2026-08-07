@@ -41,7 +41,7 @@ export function LlmoPageNav() {
 
   return (
     <>
-      {/* 共通ヘッダーバー：PC=ロゴ+TOPへ戻る／モバイル=ロゴ+ハンバーガー */}
+      {/* 共通ヘッダーバー：PC=ロゴ+戻る／モバイル=ロゴ+ハンバーガー */}
       <header className="fixed top-0 left-0 right-0 z-[100] py-4 bg-white/70 backdrop-blur-md shadow-sm border-b border-gray-100">
         <div className="container mx-auto px-6 flex items-center justify-between">
           <a href="/" className="group">
@@ -50,13 +50,13 @@ export function LlmoPageNav() {
             </h1>
           </a>
 
-          <a
-            href="/"
+          <button
+            onClick={() => window.history.length <= 1 ? (window.location.href = "/") : window.history.back()}
             className="hidden lg:flex items-center gap-2 px-6 py-2.5 bg-[#2C3E30] text-white text-sm font-bold rounded-sm hover:bg-[#3A5240] transition-colors shadow-sm hover:shadow-md"
           >
             <ArrowLeft className="w-4 h-4" />
-            TOPへ戻る
-          </a>
+            戻る
+          </button>
 
           <button
             className="lg:hidden p-2 text-[#2C3E30] hover:bg-gray/10 rounded-sm transition-colors"
@@ -138,13 +138,13 @@ export function LlmoPageNav() {
             </div>
 
             <div className="p-6 border-t border-gray-100 bg-[#FDFBF7]">
-              <a
-                href="/"
+              <button
+                onClick={() => window.history.length <= 1 ? (window.location.href = "/") : window.history.back()}
                 className="flex items-center justify-center gap-2 w-full text-center py-4 bg-[#2C3E30] text-white text-base font-bold rounded-sm shadow-md active:bg-[#3A5240] transition-colors"
               >
                 <ArrowLeft className="w-4 h-4" />
-                TOPへ戻る
-              </a>
+                戻る
+              </button>
             </div>
           </div>
         </>

@@ -10,7 +10,7 @@ export function NdlAboutSection() {
   const isInView = useInView(ref, { once: true, margin });
 
   return (
-    <section className="w-full py-24 md:py-48 bg-[#FDFBF7]">
+    <section id="ndl-about" className="w-full py-24 md:py-48 bg-[#FDFBF7] scroll-mt-20">
       <div className="max-w-4xl mx-auto px-6 md:px-12 text-center">
         <motion.div
           ref={ref}

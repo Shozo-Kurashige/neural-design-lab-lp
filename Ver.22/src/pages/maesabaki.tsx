@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "wouter";
+import { ArrowLeft } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 
 // ── Section 1 data ──────────────────────────────────────────
@@ -53,9 +54,13 @@ export default function Maesabaki() {
       {/* ヘッダー */}
       <header className="fixed top-0 left-0 w-full z-50 bg-black/40 backdrop-blur-sm">
         <div className="max-w-5xl mx-auto px-6 md:px-12 py-4">
-          <Link href="/" className="text-white/80 text-sm font-bold tracking-wide hover:text-white transition-colors">
-            Neural Design Lab
-          </Link>
+          <button
+            onClick={() => window.history.length <= 1 ? (window.location.href = "/") : window.history.back()}
+            className="flex items-center gap-2 text-white/80 text-sm font-bold tracking-wide hover:text-white transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            戻る
+          </button>
         </div>
       </header>
 
@@ -164,12 +169,12 @@ export default function Maesabaki() {
             <p className="text-white/80 text-[0.9rem] md:text-[1rem] font-['Noto_Sans_JP'] tracking-wide text-center">
               まずは、実装前で止まっている<br />案件の話を聴かせてください。
             </p>
-            <a
-              href="/#contact"
+            <button
+              onClick={() => { window.location.href = "/#contact"; }}
               className="inline-block px-8 md:px-12 py-3.5 md:py-4 bg-[#D4AF37] text-white text-[0.9rem] md:text-[1rem] font-bold tracking-wide rounded-sm shadow-md hover:bg-[#c19f30] hover:shadow-lg transition-colors"
             >
               初回60分の壁打ちを予約する
-            </a>
+            </button>
           </motion.div>
 
         </div>

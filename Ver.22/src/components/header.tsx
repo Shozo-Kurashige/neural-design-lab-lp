@@ -4,7 +4,7 @@ import { Menu, X, ArrowLeft } from "lucide-react";
 export function Header({
   simple = false,
   alwaysWhite = false,
-  backLabel = "TOPへ戻る",
+  backLabel = "戻る",
 }: {
   simple?: boolean;
   alwaysWhite?: boolean;
@@ -21,26 +21,26 @@ export function Header({
               Neural Design Lab.
             </h1>
           </a>
-          <a
-            href="/"
+          <button
+            onClick={() => window.history.length <= 1 ? (window.location.href = "/") : window.history.back()}
             className="flex items-center gap-2 px-6 py-2.5 bg-[#2C3E30] text-white text-sm font-bold rounded-sm hover:bg-[#3A5240] transition-colors shadow-sm hover:shadow-md"
           >
             <ArrowLeft className="w-4 h-4" />
             {backLabel}
-          </a>
+          </button>
         </div>
       </header>
     );
   }
 
   const menuItems = [
-    { label: "大切にしていること", href: "/#philosophy" },
-    { label: "最新情報", href: "/#whats-up" },
+    { label: "NDLとは", href: "/#ndl-about" },
+    { label: "なにをどうするか", href: "/#challenges" },
+    { label: "私たちの考え方", href: "/#philosophy" },
+    { label: "改善モデル", href: "/#transformation-example-section" },
+    { label: "AIサーチ・LLMO", href: "/ai-search-llmo" },
     { label: "サービス", href: "/#services" },
-    { label: "技術・セキュリティ", href: "/maesabaki" },
-    { label: "導入の流れ", href: "/#process" },
-    { label: "料金", href: "/#price" },
-    { label: "私たちについて", href: "/about" },
+    { label: "ご支援の流れ", href: "/#process" },
   ];
 
   return (

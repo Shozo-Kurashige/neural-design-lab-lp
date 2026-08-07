@@ -43,7 +43,7 @@ export function ApproachSection() {
   }
 
   return (
-    <section id="approach" className="w-full py-24 md:py-32 bg-[#FDFBF7]">
+    <section id="approach" className="w-full py-24 md:py-32 bg-[#FDFBF7] scroll-mt-20">
 
       <div className="max-w-4xl mx-auto px-6 md:px-12">
 

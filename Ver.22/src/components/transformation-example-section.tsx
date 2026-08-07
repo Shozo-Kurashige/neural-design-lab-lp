@@ -44,7 +44,7 @@ export function TransformationExampleSection() {
   }
 
   return (
-    <section id="transformation" className="py-24 md:py-32 bg-[#FDFBF7]">
+    <section id="transformation-example-section" className="py-24 md:py-32 bg-[#FDFBF7] scroll-mt-20">
       <div className="container mx-auto px-6 max-w-5xl">
 
         {/* ラベル・見出し・サブコピー */}

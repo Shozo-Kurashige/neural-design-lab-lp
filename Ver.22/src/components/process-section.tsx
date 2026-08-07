@@ -18,8 +18,6 @@ function ConsultModal({
   onClose: () => void;
 }) {
   const closeRef = useRef<HTMLButtonElement>(null);
-  const proceedRef = useRef<HTMLAnchorElement>(null);
-
   const overlayRef = useRef<HTMLDivElement>(null);
 
   // 背景スクロール抑制
@@ -94,13 +92,17 @@ function ConsultModal({
 
             {/* ボタン */}
             <div className="flex flex-col gap-3">
-              <a
-                ref={proceedRef}
-                href="/#contact"
-                className="block text-center px-6 py-3.5 bg-[#2C3E30] text-white text-[0.9rem] font-bold font-['Noto_Sans_JP'] rounded-sm hover:bg-[#3A5240] transition-colors focus:outline-none focus:ring-2 focus:ring-[#2C3E30] focus:ring-offset-2"
+              <button
+                onClick={() => {
+                  onClose();
+                  setTimeout(() => {
+                    document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
+                  }, 250);
+                }}
+                className="block w-full text-center px-6 py-3.5 bg-[#2C3E30] text-white text-[0.9rem] font-bold font-['Noto_Sans_JP'] rounded-sm hover:bg-[#3A5240] transition-colors focus:outline-none focus:ring-2 focus:ring-[#2C3E30] focus:ring-offset-2"
               >
                 相談に進む
-              </a>
+              </button>
               <button
                 onClick={onClose}
                 className="w-full text-center px-6 py-3 text-[0.88rem] font-['Noto_Sans_JP'] text-[#4a4a4a] border border-[#2C3E30]/20 rounded-sm hover:bg-[#E8ECE9]/40 transition-colors focus:outline-none focus:ring-2 focus:ring-[#2C3E30] focus:ring-offset-2"

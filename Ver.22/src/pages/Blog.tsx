@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "wouter";
 import { getAllPosts } from "@/lib/wordpress";
-import { Calendar, Home } from "lucide-react";
+import { ArrowLeft, Calendar } from "lucide-react";
 
 export default function Blog() {
   const [posts, setPosts] = useState<any[]>([]);
@@ -29,12 +29,13 @@ export default function Blog() {
             Neural Design Lab ブログ
           </h1>
 
-          <Link href="/">
-            <a className="flex items-center gap-2 text-sm text-gray-400 hover:text-[#00FFCC] transition-colors border border-gray-800 px-4 py-2 rounded-full hover:border-[#00FFCC]">
-              <Home className="w-4 h-4" />
-              TOPへ戻る
-            </a>
-          </Link>
+          <button
+            onClick={() => window.history.length <= 1 ? (window.location.href = "/") : window.history.back()}
+            className="flex items-center gap-2 text-sm text-gray-400 hover:text-[#00FFCC] transition-colors border border-gray-800 px-4 py-2 rounded-full hover:border-[#00FFCC]"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            戻る
+          </button>
         </div>
 
         <div className="grid gap-8 md:grid-cols-2">
@@ -74,12 +75,13 @@ export default function Blog() {
         </div>
 
         <div className="mt-16 pt-8 border-t border-gray-900 text-center">
-          <Link href="/">
-            <a className="inline-flex items-center gap-2 text-gray-400 hover:text-[#00FFCC] transition-colors text-sm">
-              <Home className="w-4 h-4" />
-              TOPへ戻る
-            </a>
-          </Link>
+          <button
+            onClick={() => window.history.length <= 1 ? (window.location.href = "/") : window.history.back()}
+            className="inline-flex items-center gap-2 text-gray-400 hover:text-[#00FFCC] transition-colors text-sm"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            戻る
+          </button>
         </div>
       </div>
     </div>

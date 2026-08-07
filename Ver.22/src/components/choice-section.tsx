@@ -22,7 +22,7 @@ export function ChoiceSection() {
   return (
     <>
     <AiDiagnostic isOpen={diagOpen} onClose={() => setDiagOpen(false)} />
-    <section className="w-full py-24 md:py-32 bg-white">
+    <section id="services" className="w-full py-24 md:py-32 bg-white scroll-mt-20">
       <div className="max-w-5xl mx-auto px-6 md:px-12">
 
         {/* ラベル */}

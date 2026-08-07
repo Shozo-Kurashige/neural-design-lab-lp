@@ -32,7 +32,7 @@ const pillars = [
 
 export function PhilosophySection() {
   return (
-    <section id="philosophy" className="py-24 bg-white">
+    <section id="philosophy" className="py-24 bg-white scroll-mt-20">
       <div className="container mx-auto px-6 max-w-5xl">
 
         <div className="text-center mb-20">
