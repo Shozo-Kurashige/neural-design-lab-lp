@@ -281,7 +281,7 @@ export function HeroOpening() {
             <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-all duration-300 ease-in-out">
               <div className="overflow-hidden">
                 <a
-                  href={latestSlug ? `/blog/${latestSlug}` : "/blog"}
+                  href={latestSlug ? `https://neuraldesignlab.jp/blog/${latestSlug}` : "https://neuraldesignlab.jp/blog/"}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-between px-8 py-3 bg-[#3d5443] text-white/80 text-xs font-['Noto_Sans_JP'] tracking-wide hover:bg-[#4a6450] transition-colors border-t border-white/10"
@@ -290,7 +290,7 @@ export function HeroOpening() {
                   <span className="text-[#D4AF37]">→</span>
                 </a>
                 <a
-                  href="/blog"
+                  href="https://neuraldesignlab.jp/blog/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-between px-8 py-3 bg-[#3d5443] text-white/80 text-xs font-['Noto_Sans_JP'] tracking-wide hover:bg-[#4a6450] transition-colors border-t border-white/10"
