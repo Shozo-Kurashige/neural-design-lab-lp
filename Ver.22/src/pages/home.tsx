@@ -8,6 +8,9 @@ import { PhilosophySection } from "@/components/philosophy-section";
 import { TransformationExampleSection } from "@/components/transformation-example-section";
 import { ChoiceSection } from "@/components/choice-section";
 import { ProcessSection } from "@/components/process-section";
+import { WhatsUpSection } from "@/components/whats-up-section";
+import { ContactSection } from "@/components/contact-section";
+import { Footer } from "@/components/footer";
 
 export default function Home() {
   return (
@@ -22,7 +25,10 @@ export default function Home() {
         <TransformationExampleSection />
         <ChoiceSection />
         <ProcessSection />
+        <WhatsUpSection />
+        <ContactSection />
       </main>
+      <Footer />
     </div>
   );
 }
