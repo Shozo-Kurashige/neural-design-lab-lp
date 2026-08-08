@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { FadeIn } from "@/components/fade-in";
+import { ArrowLeft } from "lucide-react";
 
 // ── デスクトップ版データ ──────────────────────────────────────
 const issues = [
@@ -252,17 +253,21 @@ export default function ForConstruction() {
       <div className="block md:hidden min-h-screen bg-white font-['Noto_Sans_JP'] text-[#173B2C]">
 
         {/* ヘッダー */}
-        <header className="w-full bg-white border-b border-[#D9E7DE]">
+        <header className="fixed top-0 left-0 right-0 z-50 w-full bg-white/90 backdrop-blur-sm border-b border-[#D9E7DE]">
           <div className="max-w-md mx-auto px-5 py-3 flex items-center justify-between">
-            <a href="/" className="text-sm font-bold tracking-wide text-[#173B2C]">
-              Neural Design Lab
-            </a>
+            <button
+              onClick={() => window.history.length <= 1 ? (window.location.href = "/") : window.history.back()}
+              className="flex items-center gap-1.5 text-sm font-bold tracking-wide text-[#173B2C]"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              戻る
+            </button>
             <p className="text-[11px] text-[#2F6B4F]">近隣企業様向けご案内</p>
           </div>
         </header>
 
         {/* ① 共感と問題提起 */}
-        <section className="bg-[#173B2C] text-white">
+        <section className="bg-[#173B2C] text-white pt-12">
           <div className="max-w-md mx-auto px-5 pt-10 pb-12">
             <p className="text-xs font-medium tracking-wide text-emerald-200 mb-3">
               建設会社・工務店・リフォーム会社の皆さまへ

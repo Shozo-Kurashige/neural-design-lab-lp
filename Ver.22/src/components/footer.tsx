@@ -43,11 +43,11 @@ export function Footer({ simple = false }: { simple?: boolean }) {
               Neural Design Lab.
             </h2>
             <p className="text-gray-400 text-sm leading-relaxed mb-6 max-w-md">
-              現場を知る、明日を変える。
+              AIを入れる前に、現場の『仕方ない』をほどく。
               <br />
-              最新テクノロジーと現場叩き上げの知見で、
+              現場の知恵は残し、混乱だけをほどく。
               <br />
-              地方・中小企業の「確かな一歩」を共に創ります。
+              AIやDXが、現場で無理なく回る形へ。
             </p>
 
             <div className="flex items-center gap-4">

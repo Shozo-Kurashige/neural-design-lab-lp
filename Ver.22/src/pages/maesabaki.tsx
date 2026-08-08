@@ -36,6 +36,7 @@ function wiv(delay: number, prefersReduced: boolean | null) {
 export default function Maesabaki() {
   const prefersReduced = useReducedMotion();
   const [show, setShow] = useState(false);
+  const [cardHidden, setCardHidden] = useState(false);
 
   useEffect(() => {
     const t = setTimeout(() => setShow(true), 2000);
@@ -112,6 +113,27 @@ export default function Maesabaki() {
           </p>
 
         </div>
+
+        {/* スクロールインジケーター */}
+        <div
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2"
+          style={s1FadeStyle}
+        >
+          <span className="text-white/50 text-[10px] tracking-[0.3em] uppercase font-light">
+            Scroll
+          </span>
+          <motion.div
+            animate={prefersReduced ? {} : { y: [0, 7, 0] }}
+            transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+            className="flex flex-col items-center gap-0.5"
+          >
+            <span className="block w-px h-6 bg-white/30" />
+            <svg width="12" height="8" viewBox="0 0 12 8" fill="none" className="text-white/60">
+              <path d="M1 1L6 7L11 1" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </motion.div>
+        </div>
+
       </section>
 
       {/* ════════════════════════════════════════
@@ -142,12 +164,17 @@ export default function Maesabaki() {
           <motion.div
             {...wiv(150, prefersReduced)}
             className="group w-full rounded-sm px-7 py-7 md:px-10 md:py-9 cursor-default"
-            style={{ backgroundColor: "rgba(255,255,255,0.40)" }}
+            style={{
+              backgroundColor: "rgba(255,255,255,0.40)",
+              opacity: cardHidden ? 0 : 1,
+              transition: "opacity 0.4s ease",
+            }}
             whileHover={{
               scale: 1.02,
               backgroundColor: "rgba(255,255,255,1.0)",
               transition: { duration: 0.25, ease: "easeOut" },
             }}
+            onTap={() => setCardHidden(h => !h)}
           >
             <p className="text-white group-hover:text-[#1a1a1a] transition-colors duration-200 text-[1rem] md:text-[1.1rem] font-['Noto_Serif_JP'] font-bold mb-5 tracking-wide">
               ■ 前捌きが整うと、こう変わります。

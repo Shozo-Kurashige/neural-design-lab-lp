@@ -99,12 +99,12 @@ export function SkillsSection() {
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {toolCategories.map((category, index) => (
             <FadeIn key={index} delay={index * 100}>
-              <div className="bg-white p-6 rounded-sm shadow-sm border border-gray-100 hover:border-[#D4AF37]/30 transition-colors h-full flex flex-col">
+              <div className="group bg-white p-6 rounded-sm shadow-sm border border-gray-100 hover:border-[#D4AF37]/40 hover:shadow-xl hover:-translate-y-2 transition-all duration-500 h-full flex flex-col">
                 <div className="flex items-center gap-3 mb-4 border-b border-gray-100 pb-4">
-                  <div className="p-2 bg-[#F5F7F6] rounded-full shrink-0">
+                  <div className="p-2 bg-[#F5F7F6] rounded-full shrink-0 group-hover:bg-[#2C3E30] transition-all duration-500">
                     {category.icon}
                   </div>
-                  <h3 className="font-['Noto_Serif_JP'] font-bold text-[#2C3E30] text-base leading-snug">
+                  <h3 className="font-['Noto_Serif_JP'] font-bold text-[#2C3E30] text-base leading-snug group-hover:text-[#D4AF37] transition-colors duration-300">
                     {category.title}
                   </h3>
                 </div>
@@ -121,7 +121,7 @@ export function SkillsSection() {
                     {category.tools.map((tool, i) => (
                       <span
                         key={i}
-                        className="text-[11px] text-gray-400 bg-gray-50 border border-gray-100 px-2 py-0.5 rounded-sm"
+                        className="text-[11px] text-[#2C3E30] bg-gray-50 border border-gray-100 px-2 py-0.5 rounded-sm"
                       >
                         {tool}
                       </span>
