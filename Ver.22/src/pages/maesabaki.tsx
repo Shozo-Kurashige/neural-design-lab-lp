@@ -196,12 +196,14 @@ export default function Maesabaki() {
             <p className="text-white/80 text-[0.9rem] md:text-[1rem] font-['Noto_Sans_JP'] tracking-wide text-center">
               まずは、実装前で止まっている<br />案件の話を聴かせてください。
             </p>
-            <button
-              onClick={() => { window.location.href = "/#contact"; }}
+            <a
+              href="https://calendar.app.google/75fY5Suii8uFtzXR7"
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-block px-8 md:px-12 py-3.5 md:py-4 bg-[#D4AF37] text-white text-[0.9rem] md:text-[1rem] font-bold tracking-wide rounded-sm shadow-md hover:bg-[#c19f30] hover:shadow-lg transition-colors"
             >
               初回60分の壁打ちを予約する
-            </button>
+            </a>
           </motion.div>
 
         </div>

@@ -254,7 +254,9 @@ export function HeroOpening() {
             まずは現場の話を聴かせてください。
           </p>
           <a
-            href="/#contact"
+            href="https://calendar.app.google/75fY5Suii8uFtzXR7"
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-block px-8 md:px-12 py-3.5 md:py-5 bg-[#D4AF37] text-white text-[0.9rem] md:text-[1.35rem] font-bold rounded-sm shadow-md hover:bg-[#c19f30] hover:shadow-lg transition-colors"
           >
             初回60分の壁打ちを予約する

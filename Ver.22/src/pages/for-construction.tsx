@@ -231,7 +231,9 @@ export default function ForConstruction() {
                     まずは、現場の状況をお聞かせください。
                   </p>
                   <a
-                    href="/#contact"
+                    href="https://calendar.app.google/75fY5Suii8uFtzXR7"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="inline-block px-10 py-4 rounded-sm font-['Noto_Sans_JP'] font-bold text-[0.95rem] transition-opacity duration-200 hover:opacity-80"
                     style={{ backgroundColor: "#2C3E30", color: "#ffffff" }}
                   >
