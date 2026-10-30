@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/ndl-favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta
+      name="description"
+      content="AIを入れる前に、現場の『仕方ない』をほどく。Neural Design Lab.は、現場の知恵を残しながらAI・DXを無理なく回す形へ整える、中小企業向けDX支援パートナーです。"
+    />
+
+    <!-- OGP -->
+    <meta property="og:type"        content="website" />
+    <meta property="og:url"         content="https://neuraldesignlab.jp/" />
+    <meta property="og:title"       content="Neural Design Lab. | ニューロ・デザイン・ラボ" />
+    <meta property="og:description" content="AIを入れる前に、現場の『仕方ない』をほどく。現場の知恵は残し、混乱だけをほどく。AIやDXが、現場で無理なく回る形へ。" />
+    <meta property="og:image"       content="https://neuraldesignlab.jp/Self.webp" />
+    <meta property="og:locale"      content="ja_JP" />
+    <meta property="og:site_name"   content="Neural Design Lab." />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card"        content="summary_large_image" />
+    <meta name="twitter:title"       content="Neural Design Lab. | ニューロ・デザイン・ラボ" />
+    <meta name="twitter:description" content="AIを入れる前に、現場の『仕方ない』をほどく。現場の知恵は残し、混乱だけをほどく。AIやDXが、現場で無理なく回る形へ。" />
+    <meta name="twitter:image"       content="https://neuraldesignlab.jp/Self.webp" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!--
+      フォント非同期読み込み（レンダリングブロック解消・FOIT対策）
+      - rel="preload" で帯域確保しつつ描画をブロックしない
+      - onload で stylesheet に昇格（display=swap で即テキスト表示）
+      - noscript でJS無効環境のフォールバック
+    -->
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Noto+Serif+JP:wght@700&display=swap"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
+    <noscript>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Noto+Serif+JP:wght@700&display=swap"
+        rel="stylesheet"
+      />
+    </noscript>
+
+    <title>Neural Design Lab. | ニューロ・デザイン・ラボ</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

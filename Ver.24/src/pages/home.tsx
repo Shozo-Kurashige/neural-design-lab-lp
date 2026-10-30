@@ -1,0 +1,36 @@
+import React from "react";
+import { Header } from "@/components/header";
+import { HeroOpening } from "@/components/hero-opening";
+import { NdlAboutSection } from "@/components/ndl-about-section";
+import { ChallengesSection } from "@/components/challenges-section";
+import { ApproachSection } from "@/components/approach-section";
+import { PhilosophySection } from "@/components/philosophy-section";
+import { TransformationExampleSection } from "@/components/transformation-example-section";
+import { ChoiceSection } from "@/components/choice-section";
+import { ProcessSection } from "@/components/process-section";
+import { WhatsUpSection } from "@/components/whats-up-section";
+import { ContactSection } from "@/components/contact-section";
+import { Footer } from "@/components/footer";
+import { HomePageNav } from "@/components/home-page-nav";
+
+export default function Home() {
+  return (
+    <div className="min-h-screen bg-[#FDFBF7] font-['Noto_Sans_JP']">
+      <Header />
+      <HomePageNav />
+      <main>
+        <HeroOpening />
+        <NdlAboutSection />
+        <ChallengesSection />
+        <ApproachSection />
+        <PhilosophySection />
+        <TransformationExampleSection />
+        <ChoiceSection />
+        <ProcessSection />
+        <WhatsUpSection />
+        <ContactSection />
+      </main>
+      <Footer />
+    </div>
+  );
+}
